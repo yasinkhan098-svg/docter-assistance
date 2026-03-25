@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MediAI Pro — Doctor Login / Signup</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #042a2b;
+      /* Deep Teal/Emerald */
+      --surface: rgba(13, 20, 33, 0.45);
+      /* Glass base */
+      --card: rgba(17, 24, 39, 0.55);
+      /* Glass card */
+      --border: rgba(255, 255, 255, 0.12);
+      --accent: #00f5c4;
+      /* Brighter Teal */
+      --accent2: #4ade80;
+      /* Emerald Green */
+      --purple: #a78bfa;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --red: #f87171;
+      --green: #34d399;
+      --yellow: #fbbf24;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80vw 60vh at 10% 10%, rgba(0, 245, 196, 0.12), transparent),
+        radial-gradient(ellipse 60vw 80vh at 90% 90%, rgba(52, 211, 153, 0.1), transparent),
+        radial-gradient(ellipse 40vw 40vh at 50% 50%, rgba(20, 83, 45, 0.2), transparent);
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* HEADER */
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .auth-logo-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      margin: 0 auto 12px;
+      background: linear-gradient(135deg, #00d4aa, #4a9eff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 0 30px rgba(0, 212, 170, .3);
+    }
+
+    .auth-logo-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-logo-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--accent);
+      letter-spacing: 3px;
+      margin-top: 2px;
+    }
+
+    /* CARD WITH GLASSMORPHISM */
+    .auth-card {
+      width: 100%;
+      max-width: 540px;
+      background: var(--card);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    /* TABS */
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .auth-tab {
+      padding: 18px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      letter-spacing: .5px;
+    }
+
+    .auth-tab.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom: 3px solid var(--accent);
+      text-shadow: 0 0 15px rgba(0, 245, 196, 0.4);
+    }
+
+    .auth-tab:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .auth-body {
+      padding: 28px;
+    }
+
+    /* PANEL */
+    .auth-panel {
+      display: none;
+    }
+
+    .auth-panel.active {
+      display: block;
+    }
+
+    /* FORM */
+    .form-row {
+      display: grid;
+      gap: 14px;
+    }
+
+    .form-row.cols-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .fgroup {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .fgroup label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .fgroup label .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    input,
+    select,
+    textarea {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 14px 18px;
+      color: #fff;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: all .25s ease;
+      outline: none;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 25px rgba(0, 245, 196, 0.15);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    select option {
+      background: #1e293b;
+    }
+
+    /* PLAN CARDS */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .plan-card {
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 18px 12px;
+      cursor: pointer;
+      transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      background: rgba(255, 255, 255, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .plan-card.selected {
+      border-color: var(--accent);
+      background: rgba(0, 245, 196, 0.12);
+      box-shadow: 0 10px 30px rgba(0, 245, 196, 0.2);
+    }
+
+    .plan-card.selected .plan-radio {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: 10px;
+      right: -25px;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 4px 30px;
+      transform: rotate(45deg);
+      letter-spacing: .5px;
+    }
+
+    .plan-badge.popular {
+      background: rgba(245, 158, 11, .2);
+      color: var(--yellow);
+    }
+
+    .plan-badge.best {
+      background: rgba(139, 92, 246, .2);
+      color: var(--purple);
+    }
+
+    .plan-icon {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .plan-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .plan-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 2px;
+    }
+
+    .plan-period {
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .plan-feature {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .plan-radio {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin: 6px auto 0;
+      transition: all .2s;
+    }
+
+    /* DIVIDER */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* BUTTON */
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #00f5c4, #34d399);
+      border: none;
+      border-radius: 16px;
+      color: #03211b;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .3s;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      box-shadow: 0 10px 30px rgba(0, 245, 196, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 245, 196, 0.4);
+      filter: brightness(1.1);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255, 255, 255, .1), transparent);
+      transform: translateX(-100%);
+      transition: transform .4s;
+    }
+
+    .btn-primary:hover::before {
+      transform: translateX(100%);
+    }
+
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 11px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: 8px;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ALERT */
+    .alert {
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert.error {
+      background: rgba(239, 68, 68, .1);
+      border: 1px solid rgba(239, 68, 68, .25);
+      color: #fca5a5;
+    }
+
+    .alert.success {
+      background: rgba(16, 185, 129, .1);
+      border: 1px solid rgba(16, 185, 129, .25);
+      color: #6ee7b7;
+    }
+
+    .alert.info {
+      background: rgba(74, 158, 255, .1);
+      border: 1px solid rgba(74, 158, 255, .25);
+      color: #93c5fd;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    /* PASSWORD TOGGLE */
+    .pass-wrap {
+      position: relative;
+    }
+
+    .pass-wrap input {
+      padding-right: 42px;
+    }
+
+    .pass-eye {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    /* LOADING SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* STRENGTH METER */
+    .strength-bar {
+      height: 3px;
+      border-radius: 3px;
+      margin-top: 6px;
+      background: var(--border);
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .3s, background .3s;
+      width: 0%;
+    }
+
+    .strength-text {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* INFO CHIPS */
+    .info-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 600;
+      background: rgba(0, 212, 170, .08);
+      border: 1px solid rgba(0, 212, 170, .2);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* PAYMENT PAGE */
+    #paymentPanel {
+      background: rgba(139, 92, 246, .05);
+      border: 1px solid rgba(139, 92, 246, .2);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .pay-summary {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .pay-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .pay-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #c4b5fd;
+      margin-bottom: 4px;
+    }
+
+    .pay-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .pay-period {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pay-features {
+      list-style: none;
+      margin: 16px 0;
+    }
+
+    .pay-features li {
+      padding: 5px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pay-features li::before {
+      content: '✓ ';
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* FOOTER */
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .auth-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* TRIAL BADGE */
+    .trial-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, .08);
+      border: 1px solid rgba(245, 158, 11, .25);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: #fde68a;
+    }
+
+    @media(max-width:480px) {
+      .form-row.cols-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .auth-body {
+        padding: 20px 16px;
+      }
+    }
+
+    /* WELCOME OVERLAY */
+    .welcome-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 42, 43, 0.95);
+      z-index: 10000;
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all .6s ease;
+    }
+
+    .welcome-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .welcome-content {
+      text-align: center;
+      max-width: 480px;
+      padding: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--accent);
+      border-radius: 32px;
+      box-shadow: 0 0 80px rgba(0, 245, 196, .25);
+      transform: scale(0.85);
+      transition: transform .6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(20px);
+    }
+
+    .welcome-overlay.show .welcome-content {
+      transform: scale(1);
+    }
+
+    .welcome-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 0 20px var(--accent));
+    }
+
+    .welcome-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 38px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .welcome-text {
+      font-size: 17px;
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .welcome-btn {
+      background: linear-gradient(135deg, #00d4aa, #4a9eff);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .welcome-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 212, 170, .3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-glow"></div>
+
+  <!-- WELCOME OVERLAY -->
+  <div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-content">
+      <div class="welcome-icon">🎉</div>
+      <div class="welcome-title text-success">Welcome Dr. <span id="welcomeName"></span>!</div>
+      <div class="welcome-text">Your registration on MediAI Pro was successful. You can now use advanced clinical
+        intelligence.</div>
+      <button class="welcome-btn" onclick="redirectToApp()">Get Started →</button>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+    <!-- LOGO -->
+    <div class="auth-logo">
+      <div class="auth-logo-icon">⚕</div>
+      <div class="auth-logo-name">MediAI Pro</div>
+      <div class="auth-logo-sub">CLINICAL INTELLIGENCE PLATFORM</div>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="auth-card" id="mainCard">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔐 Doctor Login</button>
+        <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">📝 New Registration</button>
+      </div>
+
+      <div class="auth-body">
+
+        <!-- ══ LOGIN PANEL ══ -->
+        <div class="auth-panel active" id="loginPanel">
+          <div class="alert" id="loginAlert"></div>
+          <div class="form-row" style="gap:14px">
+            <div class="fgroup">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" id="loginEmail" placeholder="doctor@example.com" autocomplete="email">
+            </div>
+            <div class="fgroup">
+              <label>Password <span class="req">*</span></label>
+              <div class="pass-wrap">
+                <input type="password" id="loginPassword" placeholder="Enter your password"
+                  autocomplete="current-password">
+                <button class="pass-eye" onclick="togglePass('loginPassword',this)">👁</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:20px">
+            <button class="btn-primary" id="loginBtn" onclick="doLogin()">🔐 Login</button>
+          </div>
+          <div class="trial-badge" style="margin-top:14px">
+            <span>💡</span>
+            <span>New here? <b style="cursor:pointer;color:#f59e0b" onclick="switchTab('signup')">Register now</b> and
+              get a 3-day Free Trial!</span>
+          </div>
+        </div>
+
+        <!-- ══ SIGNUP PANEL ══ -->
+        <div class="auth-panel" id="signupPanel">
+          <div class="alert" id="signupAlert"></div>
+
+          <!-- Basic Info -->
+          <div
+            style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">
+            👤 Doctor Information</div>
+          <div class="form-row cols-2">
+            <div class="fgroup">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" id="su_name" placeholder="Dr. Suresh Kumar">
+            </div>
+            <div class="fgroup">
+              <label>Phone Number</label>
+              <input type="tel" id="su_phone" placeholder="+91 98765 43210">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:12px">
+            <div class="fgroup">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" id="su_email" placeholder="doctor@example.com">
+            </div>
+          </div>
+
+          <div class="divider"><span>Medical Qualifications</span></div>
+
+          <!-- Qualification -->
+          <div class="form-row cols-2">
+            <div class="fgroup">
+              <label>Highest Degree <span class="req">*</span></label>
+              <select id="su_qual">
+                <option value="">Select Degree</option>
+                <optgroup label="MBBS / BDS">
+                  <option>MBBS</option>
+                  <option>BDS (Dental)</option>
+                  <option>BAMS (Ayurveda)</option>
+                  <option>BHMS (Homeopathy)</option>
+                  <option>BUMS (Unani)</option>
+                </optgroup>
+                <optgroup label="Postgraduate MD/MS">
+                  <option>MD — General Medicine</option>
+                  <option>MD — Paediatrics</option>
+                  <option>MD — Psychiatry</option>
+                  <option>MD — Dermatology</option>
+                  <option>MD — Radiology</option>
+                  <option>MD — Pathology</option>
+                  <option>MD — Anaesthesia</option>
+                  <option>MS — General Surgery</option>
+                  <option>MS — Orthopaedics</option>
+                  <option>MS — ENT</option>
+                  <option>MS — Ophthalmology</option>
+                  <option>MS — Obstetrics & Gynaecology</option>
+                </optgroup>
+                <optgroup label="DM / MCh / DNB">
+                  <option>DM — Cardiology</option>
+                  <option>DM — Neurology</option>
+                  <option>DM — Gastroenterology</option>
+                  <option>DM — Nephrology</option>
+                  <option>DM — Endocrinology</option>
+                  <option>DM — Oncology</option>
+                  <option>MCh — Cardiothoracic</option>
+                  <option>MCh — Neurosurgery</option>
+                  <option>MCh — Urology</option>
+                  <option>MCh — Plastic Surgery</option>
+                  <option>DNB (Various specialties)</option>
+                </optgroup>
+                <optgroup label="Other">
+                  <option>PhD (Medical)</option>
+                  <option>MDS (Dental)</option>
+                  <option>Other</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="fgroup">
+              <label>Specialization / Practice</label>
+              <input type="text" id="su_spec" placeholder="e.g. Cardiologist, GP">
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:12px">
+            <div class="fgroup">
+              <label>Medical Council Reg. No.</label>
+              <input type="text" id="su_reg" placeholder="e.g. MCI-123456 / State reg. no.">
+            </div>
+          </div>
+
+          <div class="divider"><span>Account Security</span></div>
+
+          <div class="form-row cols-2">
+            <div class="fgroup">
+              <label>Create Password <span class="req">*</span></label>
+              <div class="pass-wrap">
+                <input type="password" id="su_pass" placeholder="Min. 6 characters" oninput="checkStrength(this)">
+                <button class="pass-eye" onclick="togglePass('su_pass',this)">👁</button>
+              </div>
+              <div class="strength-bar">
+                <div class="strength-fill" id="strengthFill"></div>
+              </div>
+              <div class="strength-text" id="strengthText"></div>
+            </div>
+            <div class="fgroup">
+              <label>Confirm Password <span class="req">*</span></label>
+              <div class="pass-wrap">
+                <input type="password" id="su_pass2" placeholder="Re-enter password">
+                <button class="pass-eye" onclick="togglePass('su_pass2',this)">👁</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"><span>Choose Your Plan</span></div>
+
+          <div class="plan-grid" id="planGrid">
+            <div class="plan-card" data-plan="trial" onclick="selectPlan('trial',this)">
+              <div class="plan-icon">🆓</div>
+              <div class="plan-name">Free Trial</div>
+              <div class="plan-price">Rs. 0</div>
+              <div class="plan-period">3 Days</div>
+              <div class="plan-feature">Full access<br>No card needed</div>
+              <div class="plan-radio"></div>
+            </div>
+            <div class="plan-card" data-plan="monthly" onclick="selectPlan('monthly',this)">
+              <div class="plan-badge popular">POPULAR</div>
+              <div class="plan-icon">📅</div>
+              <div class="plan-name">Monthly</div>
+              <div class="plan-price">₹999</div>
+              <div class="plan-period">per month</div>
+              <div class="plan-feature">Full access<br>Cancel anytime</div>
+              <div class="plan-radio"></div>
+            </div>
+            <div class="plan-card" data-plan="yearly" onclick="selectPlan('yearly',this)">
+              <div class="plan-badge best">BEST VALUE</div>
+              <div class="plan-icon">🏆</div>
+              <div class="plan-name">Yearly</div>
+              <div class="plan-price">₹7,999</div>
+              <div class="plan-period">per year (save 33%)</div>
+              <div class="plan-feature">Full access<br>+ Priority support</div>
+              <div class="plan-radio"></div>
+            </div>
+          </div>
+
+          <input type="hidden" id="selectedPlan" value="">
+
+          <div style="margin-top:20px">
+            <button class="btn-primary" id="signupBtn" onclick="doSignup()">📝 Register & Continue</button>
+          </div>
+
+          <div class="info-chips">
+            <span class="chip">🔒 256-bit Encrypted</span>
+            <span class="chip">🏥 Doctors Only</span>
+            <span class="chip">🆓 3-Day Trial</span>
+            <span class="chip">❌ Cancel Anytime</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PAYMENT CARD (hidden initially) ══ -->
+    <div class="auth-card" id="paymentCard" style="display:none;max-width:440px">
+      <div class="auth-body">
+        <div id="paymentPanel">
+          <div class="pay-summary">
+            <div class="pay-icon" id="payIcon">💳</div>
+            <div class="pay-title" id="payTitle">Complete Payment</div>
+            <div class="pay-amount" id="payAmount">₹999</div>
+            <div class="pay-period" id="payPeriod">Monthly Plan</div>
+          </div>
+          <ul class="pay-features">
+            <li>Full AI Doctor Assistant — unlimited use</li>
+            <li>200+ Diseases with AI medicine suggestions</li>
+            <li>60+ Lab Tests with AI analysis</li>
+            <li>Chronic Disease Special Panel (30 diseases)</li>
+            <li>AI Clinical Chat — ask anything</li>
+            <li>Patient Records management</li>
+          </ul>
+          <div class="alert info show" id="payInfo">
+            🔒 Payment secured by Razorpay — India's trusted payment gateway. UPI, Card, NetBanking all accepted.
+          </div>
+        </div>
+        <button class="btn-primary" id="payBtn" onclick="startRazorpay()">💳 Pay Securely</button>
+        <button class="btn-secondary" onclick="showDemoPayment()">🧪 Demo Mode (Test without payment)</button>
+        <div class="alert" id="payAlert" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>© 2024 MediAI Pro — Medical professionals only</p>
+      <p style="margin-top:4px">
+        <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+        <a href="mailto:support@mediai.pro">Support</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const BASE = '';  // same origin
+    let pendingPaymentData = null;
+
+    // ── Handle redirect messages from app ────────────────────────
+    (function () {
+      const msg = sessionStorage.getItem('auth_msg');
+      if (!msg) return;
+      sessionStorage.removeItem('auth_msg');
+      setTimeout(() => {
+        const alertEl = document.getElementById('loginAlert');
+        if (!alertEl) return;
+        if (msg === 'trial_expired') {
+          alertEl.textContent = '⏰ Your 3-day Free Trial has ended. Please login and choose a paid plan.';
+          alertEl.className = 'alert info show';
+        } else if (msg === 'subscription_expired') {
+          alertEl.textContent = '📅 Subscription expired. Please login to renew.';
+          alertEl.className = 'alert info show';
+        }
+      }, 300);
+    })();
+
+    // ── TAB SWITCH ────────────────────────────────────────────────
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tab + 'Panel').classList.add('active');
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    }
+
+    // ── PLAN SELECTION ────────────────────────────────────────────
+    function selectPlan(plan, el) {
+      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('selectedPlan').value = plan;
+    }
+
+    // ── PASSWORD ──────────────────────────────────────────────────
+    function togglePass(id, btn) {
+      const el = document.getElementById(id);
+      el.type = el.type === 'password' ? 'text' : 'password';
+      btn.textContent = el.type === 'password' ? '👁' : '🙈';
+    }
+
+    function checkStrength(el) {
+      const v = el.value;
+      const fill = document.getElementById('strengthFill');
+      const text = document.getElementById('strengthText');
+      let score = 0;
+      if (v.length >= 6) score++;
+      if (v.length >= 10) score++;
+      if (/[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      const levels = [
+        { w: '0%', c: 'transparent', t: '' },
+        { w: '20%', c: '#f87171', t: 'Very weak' },
+        { w: '40%', c: '#fbbf24', t: 'Weak' },
+        { w: '60%', c: '#34d399', t: 'Average' },
+        { w: '80%', c: '#00f5c4', t: 'Good' },
+        { w: '100%', c: '#00f5c4', t: 'Very strong ✓' },
+      ];
+      const l = levels[score] || levels[0];
+      fill.style.width = l.w;
+      fill.style.background = l.c;
+      text.textContent = l.t;
+      text.style.color = l.c;
+    }
+
+    // ── ALERT ─────────────────────────────────────────────────────
+    function showAlert(id, msg, type = 'error') {
+      const el = document.getElementById(id);
+      el.textContent = msg; el.className = `alert ${type} show`;
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function hideAlert(id) {
+      document.getElementById(id).className = 'alert';
+    }
+
+    // ── SET LOADING ───────────────────────────────────────────────
+    function setLoading(btnId, loading, text = '') {
+      const btn = document.getElementById(btnId);
+      if (loading) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span>${text || 'Please wait...'}`;
+      } else {
+        btn.disabled = false;
+        btn.textContent = text;
+      }
+    }
+
+    // ── LOGIN ─────────────────────────────────────────────────────
+    async function doLogin() {
+      hideAlert('loginAlert');
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!email || !password) return showAlert('loginAlert', '📧 Both email and password are required');
+
+      setLoading('loginBtn', true, 'Logging in...');
+      try {
+        const r = await fetch(BASE + '/api/auth/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const d = await r.json();
+
+        if (!r.ok) {
+          if (d.error === 'trial_expired') {
+            showAlert('loginAlert', '⏰ Free trial expired. Please choose a paid plan.', 'info');
+            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name), 1500);
+          } else if (d.error === 'subscription_expired') {
+            showAlert('loginAlert', '📅 Subscription expired. Please renew.', 'info');
+            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name), 1500);
+          } else {
+            showAlert('loginAlert', d.error || 'Login failed');
+          }
+        } else {
+          sessionStorage.setItem('mediai_token', d.token);
+          sessionStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+          // Also set in localStorage for cross-tab persistence IF user wants, 
+          // but for multi-user same browser we MUST use sessionStorage as primary.
+          localStorage.setItem('mediai_token', d.token);
+          localStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+          showAlert('loginAlert', `✅ Welcome Dr. ${d.doctor.name}! Redirecting...`, 'success');
+          setTimeout(() => window.location.href = '/', 1200);
+        }
+      } catch (e) {
+        showAlert('loginAlert', '🌐 Unable to connect to server. Please check your internet connection.');
+      }
+      setLoading('loginBtn', false, '🔐 Login');
+    }
+
+    // ── SIGNUP ────────────────────────────────────────────────────
+    async function doSignup() {
+      hideAlert('signupAlert');
+      const data = {
+        name: document.getElementById('su_name').value.trim(),
+        email: document.getElementById('su_email').value.trim(),
+        phone: document.getElementById('su_phone').value.trim(),
+        qualification: document.getElementById('su_qual').value,
+        specialization: document.getElementById('su_spec').value.trim(),
+        reg_number: document.getElementById('su_reg').value.trim(),
+        password: document.getElementById('su_pass').value,
+        plan: document.getElementById('selectedPlan').value,
+      };
+
+      // Validate
+      if (!data.name) return showAlert('signupAlert', '👤 Name is required');
+      if (!data.email) return showAlert('signupAlert', '📧 Email is required');
+      if (!data.qualification) return showAlert('signupAlert', '🎓 Degree/Qualification is required (mandatory for doctors)');
+      if (!data.password) return showAlert('signupAlert', '🔐 Password is required');
+      if (data.password.length < 6) return showAlert('signupAlert', '🔐 Password must be at least 6 characters');
+      const pass2 = document.getElementById('su_pass2').value;
+      if (data.password !== pass2) return showAlert('signupAlert', '🔐 Passwords do not match');
+      if (!data.plan) return showAlert('signupAlert', '📋 Please select a plan');
+
+      setLoading('signupBtn', true, 'Creating account...');
+      try {
+        const r = await fetch(BASE + '/api/auth/signup', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const d = await r.json();
+
+        if (!r.ok) {
+          showAlert('signupAlert', d.error || 'Signup failed');
+        } else if (d.success && d.plan === 'trial') {
+          // Free trial — direct login
+          sessionStorage.setItem('mediai_token', d.token);
+          sessionStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+          localStorage.setItem('mediai_token', d.token);
+          localStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+
+          // Clear form
+          clearSignupForm();
+
+          // Show professional welcome
+          showWelcome(d.doctor.name);
+        } else if (d.needsPayment) {
+          // Paid plan — show payment
+          pendingPaymentData = d;
+          showPaymentCard(d);
+        }
+      } catch (e) {
+        showAlert('signupAlert', '🌐 Unable to connect to server. Please check your internet connection.');
+      }
+      setLoading('signupBtn', false, '📝 Register & Continue');
+    }
+
+    function clearSignupForm() {
+      const fields = ['su_name', 'su_email', 'su_phone', 'su_qual', 'su_spec', 'su_reg', 'su_pass', 'su_pass2'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('selectedPlan').value = '';
+      document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('strengthFill').style.width = '0%';
+      document.getElementById('strengthText').textContent = '';
+    }
+
+    function showWelcome(name) {
+      document.getElementById('welcomeName').textContent = name;
+      document.getElementById('welcomeOverlay').classList.add('show');
+    }
+
+    function redirectToApp() {
+      window.location.href = '/';
+    }
+
+    // ── SHOW PAYMENT CARD ─────────────────────────────────────────
+    function showPaymentCard(d) {
+      document.getElementById('mainCard').style.display = 'none';
+      document.getElementById('paymentCard').style.display = 'block';
+      const isMonthly = d.planLabel?.toLowerCase().includes('monthly');
+      document.getElementById('payIcon').textContent = isMonthly ? '📅' : '🏆';
+      document.getElementById('payTitle').textContent = `Dr. ${d.doctor.name} — Activate Plan`;
+      document.getElementById('payAmount').textContent = isMonthly ? '₹999' : '₹7,999';
+      document.getElementById('payPeriod').textContent = d.planLabel || 'Paid Plan';
+      window.scrollTo(0, 0);
+    }
+
+    function showPaymentForRenewal(doctorId, name) {
+      pendingPaymentData = {
+        doctor: { id: doctorId, name }, plan: 'monthly',
+        planLabel: 'Monthly Plan — Rs. 999/month',
+        orderId: null, razorpayKeyId: 'rzp_test_DEMO'
+      };
+      document.getElementById('mainCard').style.display = 'none';
+      document.getElementById('paymentCard').style.display = 'block';
+      document.getElementById('payTitle').textContent = `Dr. ${name} — Renew Plan`;
+      document.getElementById('payAmount').textContent = '₹999';
+      document.getElementById('payPeriod').textContent = 'Monthly Renewal';
+    }
+
+    // ── RAZORPAY PAYMENT ──────────────────────────────────────────
+    function startRazorpay() {
+      if (!pendingPaymentData) return;
+      const d = pendingPaymentData;
+      const keyId = d.razorpayKeyId || 'rzp_test_DEMO';
+      const isDemoKey = keyId.includes('DEMO') || keyId.includes('PLACEHOLDER');
+
+      if (isDemoKey) {
+        showAlert('payAlert',
+          '⚙️ Razorpay keys are not configured. Try demo mode or add Razorpay keys to your .env file.',
+          'info');
+        document.getElementById('payAlert').style.display = 'block';
+        return;
+      }
+
+      const plan = d.plan || 'monthly';
+      const amount = plan === 'monthly' ? 99900 : 799900;
+      const doctorName = d.doctor?.name || 'Doctor';
+
+      const options = {
+        key: keyId,
+        amount: amount,
+        currency: 'INR',
+        name: 'MediAI Pro',
+        description: plan === 'monthly' ? 'Monthly Subscription' : 'Yearly Subscription',
+        order_id: d.orderId,
+        prefill: {
+          name: doctorName,
+          email: d.doctor?.email || '',
+        },
+        theme: { color: '#00d4aa' },
+        handler: async function (response) {
+          await verifyPayment(response, d.doctor.id, plan, false);
+        },
+        modal: {
+          ondismiss: function () {
+            showAlert('payAlert', '💳 Payment canceled. Please try again.', 'info');
+            document.getElementById('payAlert').style.display = 'block';
+          }
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        showAlert('payAlert', '❌ Payment failed: ' + (resp.error?.description || 'Unknown error'), 'error');
+        document.getElementById('payAlert').style.display = 'block';
+      });
+      rzp.open();
+    }
+
+    // ── DEMO PAYMENT ──────────────────────────────────────────────
+    async function showDemoPayment() {
+      if (!pendingPaymentData) return;
+      const confirmed = confirm(
+        '🧪 DEMO MODE\n\nThis is for testing only. For real deployment, add Razorpay keys to your .env file.\n\nComplete demo payment?'
+      );
+      if (!confirmed) return;
+
+      setLoading('payBtn', true, 'Processing demo payment...');
+      await verifyPayment(
+        { razorpay_order_id: 'demo_order', razorpay_payment_id: 'demo_pay', razorpay_signature: 'demo_sig' },
+        pendingPaymentData.doctor.id,
+        pendingPaymentData.plan || 'monthly',
+        true
+      );
+      setLoading('payBtn', false, '💳 Pay Securely');
+    }
+
+    async function verifyPayment(response, doctorId, plan, demo) {
+      try {
+        const r = await fetch(BASE + '/api/payment/verify', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            doctorId, plan, demo
+          })
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error);
+        sessionStorage.setItem('mediai_token', d.token);
+        sessionStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+        localStorage.setItem('mediai_token', d.token);
+        localStorage.setItem('mediai_doctor', JSON.stringify(d.doctor));
+        document.getElementById('paymentCard').innerHTML = `
+      <div class="auth-body" style="text-align:center;padding:40px 28px">
+        <div style="font-size:60px;margin-bottom:16px">🎉</div>
+        <div style="font-size:20px;font-weight:700;color:#6ee7b7;margin-bottom:8px">Payment Successful!</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:24px">${d.message}</div>
+        <div style="font-size:11px;color:var(--muted)">Redirecting to app...</div>
+      </div>`;
+        setTimeout(() => window.location.href = '/', 2000);
+      } catch (e) {
+        showAlert('payAlert', '❌ Payment verification failed: ' + e.message, 'error');
+        document.getElementById('payAlert').style.display = 'block';
+      }
+    }
+
+    // ── ENTER KEY ─────────────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const panel = document.querySelector('.auth-panel.active');
+        if (panel?.id === 'loginPanel') doLogin();
+      }
+    });
+
+    // ── AUTO-REDIRECT IF ALREADY LOGGED IN ────────────────────────
+    (async function () {
+      const token = localStorage.getItem('mediai_token');
+      if (!token) return;
+      try {
+        const r = await fetch(BASE + '/api/auth/me', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (r.ok) {
+          // Sync sessionStorage if not set
+          if (!sessionStorage.getItem('mediai_token')) {
+            sessionStorage.setItem('mediai_token', token);
+            sessionStorage.setItem('mediai_doctor', localStorage.getItem('mediai_doctor'));
+          }
+          window.location.href = '/';
+        }
+        else { localStorage.removeItem('mediai_token'); localStorage.removeItem('mediai_doctor'); sessionStorage.clear(); }
+      } catch { }
+    })();
+  </script>
+</body>
+
+</html>
