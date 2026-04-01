@@ -97,9 +97,12 @@ dbExec(`
   .catch(err => console.error('❌ Database init error:', err));
 
 // ── RAZORPAY ──────────────────────────────────────────────────
+const getRzpKeyId = () => (process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO').trim();
+const getRzpSecret = () => (process.env.RAZORPAY_KEY_SECRET || 'PLACEHOLDER').trim();
+
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_PLACEHOLDER',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'PLACEHOLDER',
+  key_id: getRzpKeyId(),
+  key_secret: getRzpSecret(),
 });
 
 app.use(cors());
@@ -198,7 +201,7 @@ app.post('/api/auth/signup', async (req, res) => {
     res.json({
       success: true, needsPayment: true, tempToken, orderId: order.id, amount,
       doctor: { id: docId, name, email, qualification },
-      razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO',
+      razorpayKeyId: getRzpKeyId(),
       planLabel: plan === 'monthly' ? 'Monthly — Rs. 999/month' : 'Yearly — Rs. 7999/year'
     });
   } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
@@ -224,7 +227,7 @@ app.post('/api/auth/login', async (req, res) => {
         let order;
         try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
         catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
-        return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO', orderId: order.id });
+        return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
       }
     }
     if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
@@ -234,7 +237,7 @@ app.post('/api/auth/login', async (req, res) => {
         let order;
         try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
         catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
-        return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO', orderId: order.id });
+        return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
       }
     }
     if (!['active', 'trial'].includes(doc.account_status))
@@ -288,8 +291,8 @@ app.get('/api/auth/me', verifyToken, async (req, res) => {
 app.post('/api/payment/verify', async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, doctorId, plan, demo } = req.body;
-    if (!demo && process.env.RAZORPAY_KEY_SECRET) {
-      const sig = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+    if (!demo && getRzpSecret()) {
+      const sig = crypto.createHmac('sha256', getRzpSecret())
         .update(razorpay_order_id + '|' + razorpay_payment_id).digest('hex');
       if (sig !== razorpay_signature) return res.status(400).json({ error: 'Signature invalid' });
     }
@@ -359,7 +362,7 @@ app.post('/api/payment/create-order', verifyToken, async (req, res) => {
     let order;
     try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${req.doctor.id}` }); }
     catch { order = { id: `demo_renew_${req.doctor.id}_${Date.now()}`, amount }; }
-    res.json({ orderId: order.id, amount, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO' });
+    res.json({ orderId: order.id, amount, razorpayKeyId: getRzpKeyId() });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
