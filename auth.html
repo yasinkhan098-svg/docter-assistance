@@ -1055,10 +1055,10 @@
         if (!r.ok) {
           if (d.error === 'trial_expired') {
             showAlert('loginAlert', '⏰ Free trial expired. Please choose a paid plan.', 'info');
-            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name, d.razorpayKeyId), 1500);
+            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name, d.razorpayKeyId, d.orderId), 1500);
           } else if (d.error === 'subscription_expired') {
             showAlert('loginAlert', '📅 Subscription expired. Please renew.', 'info');
-            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name, d.razorpayKeyId), 1500);
+            setTimeout(() => showPaymentForRenewal(d.doctorId, d.name, d.razorpayKeyId, d.orderId), 1500);
           } else {
             showAlert('loginAlert', d.error || 'Login failed');
           }
@@ -1168,11 +1168,11 @@
       window.scrollTo(0, 0);
     }
 
-    function showPaymentForRenewal(doctorId, name, keyId) {
+    function showPaymentForRenewal(doctorId, name, keyId, orderId) {
       pendingPaymentData = {
         doctor: { id: doctorId, name }, plan: 'monthly',
         planLabel: 'Monthly Plan — Rs. 999/month',
-        orderId: null, razorpayKeyId: keyId || 'rzp_test_DEMO'
+        orderId: orderId || null, razorpayKeyId: keyId || 'rzp_test_DEMO'
       };
       document.getElementById('mainCard').style.display = 'none';
       document.getElementById('paymentCard').style.display = 'block';

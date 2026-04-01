@@ -220,13 +220,21 @@ app.post('/api/auth/login', async (req, res) => {
       const end = new Date(doc.trial_start_date); end.setDate(end.getDate() + TRIAL_DAYS);
       if (now > end) {
         await dbRun("UPDATE doctors SET account_status='trial_expired' WHERE id=?", [doc.id]);
-        return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO' });
+        const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
+        let order;
+        try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
+        catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
+        return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO', orderId: order.id });
       }
     }
     if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
       if (now > new Date(doc.subscription_end_date)) {
         await dbRun("UPDATE doctors SET account_status='expired' WHERE id=?", [doc.id]);
-        return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO' });
+        const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
+        let order;
+        try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
+        catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
+        return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO', orderId: order.id });
       }
     }
     if (!['active', 'trial'].includes(doc.account_status))
