@@ -93,8 +93,17 @@ dbExec(`
     updated_at TEXT DEFAULT (datetime('now')),
     UNIQUE(doctor_id, patient_key)
   );
-`).then(() => console.log('✅ Tables ready'))
-  .catch(err => console.error('❌ Database init error:', err));
+`).then(async () => {
+  console.log('✅ Tables ready');
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@aidoctor.com';
+  const adminPass = process.env.ADMIN_PASSWORD || 'admin1234';
+  const existingAdmin = await dbGet('SELECT id FROM doctors WHERE email=?', [adminEmail]);
+  if (!existingAdmin) {
+    const hashed = await bcrypt.hash(adminPass, 12);
+    await dbRun("INSERT INTO doctors (name, email, password, qualification, role, account_status, subscription_type) VALUES ('Admin', ?, ?, 'Administrator', 'admin', 'active', 'lifetime')", [adminEmail, hashed]);
+    console.log('✅ Permanent Admin Account Loaded');
+  }
+}).catch(err => console.error('❌ Database init error:', err));
 
 // ── RAZORPAY ──────────────────────────────────────────────────
 const getRzpKeyId = () => (process.env.RAZORPAY_KEY_ID || 'rzp_test_DEMO').trim();
@@ -124,22 +133,24 @@ function checkSub(req, res, next) {
       const doc = await dbGet('SELECT * FROM doctors WHERE id=?', [req.doctor.id]);
       if (!doc) return res.status(404).json({ error: 'not_found' });
       const now = new Date();
-      if (doc.subscription_type === 'trial') {
-        const end = new Date(doc.trial_start_date);
-        end.setDate(end.getDate() + TRIAL_DAYS);
-        if (now > end) {
-          await dbRun("UPDATE doctors SET account_status='trial_expired' WHERE id=?", [doc.id]);
-          return res.status(403).json({ error: 'trial_expired' });
+      if (doc.role !== 'admin') {
+        if (doc.subscription_type === 'trial') {
+          const end = new Date(doc.trial_start_date);
+          end.setDate(end.getDate() + TRIAL_DAYS);
+          if (now > end) {
+            await dbRun("UPDATE doctors SET account_status='trial_expired' WHERE id=?", [doc.id]);
+            return res.status(403).json({ error: 'trial_expired' });
+          }
         }
-      }
-      if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
-        if (now > new Date(doc.subscription_end_date)) {
-          await dbRun("UPDATE doctors SET account_status='expired' WHERE id=?", [doc.id]);
-          return res.status(403).json({ error: 'subscription_expired' });
+        if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
+          if (now > new Date(doc.subscription_end_date)) {
+            await dbRun("UPDATE doctors SET account_status='expired' WHERE id=?", [doc.id]);
+            return res.status(403).json({ error: 'subscription_expired' });
+          }
         }
+        if (!['active', 'trial'].includes(doc.account_status))
+          return res.status(403).json({ error: 'inactive' });
       }
-      if (!['active', 'trial'].includes(doc.account_status))
-        return res.status(403).json({ error: 'inactive' });
       req.doctorData = doc;
       next();
     } catch (e) {
@@ -219,29 +230,31 @@ app.post('/api/auth/login', async (req, res) => {
     if (!await bcrypt.compare(password, doc.password)) return res.status(401).json({ error: 'Password galat hai' });
 
     const now = new Date();
-    if (doc.subscription_type === 'trial') {
-      const end = new Date(doc.trial_start_date); end.setDate(end.getDate() + TRIAL_DAYS);
-      if (now > end) {
-        await dbRun("UPDATE doctors SET account_status='trial_expired' WHERE id=?", [doc.id]);
-        const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
-        let order;
-        try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
-        catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
-        return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
+    if (doc.role !== 'admin') {
+      if (doc.subscription_type === 'trial') {
+        const end = new Date(doc.trial_start_date); end.setDate(end.getDate() + TRIAL_DAYS);
+        if (now > end) {
+          await dbRun("UPDATE doctors SET account_status='trial_expired' WHERE id=?", [doc.id]);
+          const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
+          let order;
+          try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
+          catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
+          return res.status(403).json({ error: 'trial_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
+        }
       }
-    }
-    if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
-      if (now > new Date(doc.subscription_end_date)) {
-        await dbRun("UPDATE doctors SET account_status='expired' WHERE id=?", [doc.id]);
-        const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
-        let order;
-        try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
-        catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
-        return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
+      if (['monthly', 'yearly'].includes(doc.subscription_type) && doc.subscription_end_date) {
+        if (now > new Date(doc.subscription_end_date)) {
+          await dbRun("UPDATE doctors SET account_status='expired' WHERE id=?", [doc.id]);
+          const amount = doc.subscription_type === 'yearly' ? YEARLY_PAISE : MONTHLY_PAISE;
+          let order;
+          try { order = await razorpay.orders.create({ amount, currency: 'INR', receipt: `renew_${doc.id}` }); }
+          catch { order = { id: `demo_renew_${doc.id}_${Date.now()}` }; }
+          return res.status(403).json({ error: 'subscription_expired', doctorId: doc.id, name: doc.name, razorpayKeyId: getRzpKeyId(), orderId: order.id });
+        }
       }
+      if (!['active', 'trial'].includes(doc.account_status))
+        return res.status(403).json({ error: 'Account inactive — support se milein' });
     }
-    if (!['active', 'trial'].includes(doc.account_status))
-      return res.status(403).json({ error: 'Account inactive — support se milein' });
 
     const token = jwt.sign({
       id: doc.id, email: doc.email, name: doc.name,
@@ -269,19 +282,21 @@ app.post('/api/auth/login', async (req, res) => {
 // ── GET ME ────────────────────────────────────────────────────
 app.get('/api/auth/me', verifyToken, async (req, res) => {
   try {
-    const doc = await dbGet('SELECT id,name,email,qualification,specialization,subscription_type,account_status,trial_start_date,subscription_end_date FROM doctors WHERE id=?', [req.doctor.id]);
+    const doc = await dbGet('SELECT id,name,email,qualification,specialization,subscription_type,account_status,trial_start_date,subscription_end_date,role FROM doctors WHERE id=?', [req.doctor.id]);
     if (!doc) return res.status(404).json({ error: 'not_found' });
     const now = new Date();
     let trialDaysLeft = null, subscriptionDaysLeft = null;
-    if (doc.subscription_type === 'trial' && doc.trial_start_date) {
-      const e = new Date(doc.trial_start_date); e.setDate(e.getDate() + TRIAL_DAYS);
-      if (now > e) return res.status(403).json({ error: 'trial_expired' });
-      trialDaysLeft = Math.ceil((e - now) / (864e5));
-    }
-    if (doc.subscription_end_date) {
-      const e = new Date(doc.subscription_end_date);
-      if (now > e) return res.status(403).json({ error: 'subscription_expired' });
-      subscriptionDaysLeft = Math.ceil((e - now) / (864e5));
+    if (doc.role !== 'admin') {
+      if (doc.subscription_type === 'trial' && doc.trial_start_date) {
+        const e = new Date(doc.trial_start_date); e.setDate(e.getDate() + TRIAL_DAYS);
+        if (now > e) return res.status(403).json({ error: 'trial_expired' });
+        trialDaysLeft = Math.ceil((e - now) / (864e5));
+      }
+      if (doc.subscription_end_date) {
+        const e = new Date(doc.subscription_end_date);
+        if (now > e) return res.status(403).json({ error: 'subscription_expired' });
+        subscriptionDaysLeft = Math.ceil((e - now) / (864e5));
+      }
     }
     res.json({ doctor: { ...doc, trialDaysLeft, subscriptionDaysLeft } });
   } catch (e) { res.status(500).json({ error: e.message }); }
