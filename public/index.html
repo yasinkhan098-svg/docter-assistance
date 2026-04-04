@@ -10905,6 +10905,14 @@ Aap ek friend doctor ki tarah baat karein — professional lekin warm aur helpfu
         const data = await response.json();
         removeTyping();
 
+        if (data.error === 'token_invalid' || data.error === 'no_token') {
+          sessionStorage.clear();
+          localStorage.clear();
+          alert("Dusre device me login hua hai. Aapka session samapt ho gaya hai!");
+          window.location.href = '/auth';
+          return;
+        }
+
         if (data.content && data.content[0] && data.content[0].text) {
           const reply = data.content[0].text;
           chatHistory.push({ role: 'assistant', content: reply });
