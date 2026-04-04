@@ -94,6 +94,7 @@ dbExec(`
     UNIQUE(doctor_id, patient_key)
   );
 `).then(async () => {
+  try { await dbExec("ALTER TABLE doctors ADD COLUMN session_token TEXT DEFAULT ''"); } catch(e){}
   console.log('✅ Tables ready');
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@aidoctor.com';
   const adminPass = process.env.ADMIN_PASSWORD || 'admin1234';
@@ -122,11 +123,19 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── MIDDLEWARE ─────────────────────────────────────────────────
-function verifyToken(req, res, next) {
+async function verifyToken(req, res, next) {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer '))
     return res.status(401).json({ error: 'no_token' });
-  try { req.doctor = jwt.verify(auth.slice(7), JWT_SECRET); next(); }
+  try { 
+    const tokenStr = auth.slice(7);
+    req.doctor = jwt.verify(tokenStr, JWT_SECRET); 
+    const doc = await dbGet('SELECT session_token FROM doctors WHERE id=?', [req.doctor.id]);
+    if (doc && doc.session_token && doc.session_token !== tokenStr) {
+      return res.status(401).json({ error: 'token_invalid', detail: 'multiple_login' });
+    }
+    next(); 
+  }
   catch { res.status(401).json({ error: 'token_invalid' }); }
 }
 
@@ -187,8 +196,8 @@ app.post('/api/auth/signup', async (req, res) => {
     // FREE TRIAL
     if (plan === 'trial') {
       const ts = new Date().toISOString();
-      await dbRun(`UPDATE doctors SET subscription_type='trial',trial_start_date=?,account_status='active' WHERE id=?`, [ts, docId]);
       const token = jwt.sign({ id: docId, email, name, qualification, specialization: specialization || '' }, JWT_SECRET, { expiresIn: '7d' });
+      await dbRun(`UPDATE doctors SET subscription_type='trial',trial_start_date=?,account_status='active',session_token=? WHERE id=?`, [ts, token, docId]);
       const trialEnd = new Date(); trialEnd.setDate(trialEnd.getDate() + TRIAL_DAYS);
       return res.json({
         success: true, token, plan: 'trial', trialEnd: trialEnd.toISOString(),
@@ -212,6 +221,7 @@ app.post('/api/auth/signup', async (req, res) => {
       order = { id: `demo_${docId}_${Date.now()}`, amount, currency: 'INR' };
     }
     const tempToken = jwt.sign({ id: docId, email, name, qualification, pending: true }, JWT_SECRET, { expiresIn: '1h' });
+    await dbRun('UPDATE doctors SET session_token=? WHERE id=?', [tempToken, docId]);
     res.json({
       success: true, needsPayment: true, tempToken, orderId: order.id, amount,
       doctor: { id: docId, name, email, qualification },
@@ -263,6 +273,7 @@ app.post('/api/auth/login', async (req, res) => {
       id: doc.id, email: doc.email, name: doc.name,
       qualification: doc.qualification, specialization: doc.specialization || ''
     }, JWT_SECRET, { expiresIn: '7d' });
+    await dbRun('UPDATE doctors SET session_token=? WHERE id=?', [token, doc.id]);
 
     let trialDaysLeft = null, subscriptionDaysLeft = null;
     if (doc.subscription_type === 'trial') {
@@ -327,6 +338,7 @@ app.post('/api/payment/verify', async (req, res) => {
       id: doc.id, email: doc.email, name: doc.name,
       qualification: doc.qualification, specialization: doc.specialization || ''
     }, JWT_SECRET, { expiresIn: '7d' });
+    await dbRun('UPDATE doctors SET session_token=? WHERE id=?', [token, doctorId]);
     res.json({
       success: true, token,
       doctor: { id: doc.id, name: doc.name, qualification: doc.qualification, plan, subscriptionEnd: end.toISOString() },
