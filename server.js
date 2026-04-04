@@ -370,14 +370,38 @@ app.post('/api/payment/create-order', verifyToken, async (req, res) => {
 app.post('/api/chat', checkSub, async (req, res) => {
   try {
     const { model, max_tokens, system, messages } = req.body;
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'API key not set' });
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) return res.status(500).json({ error: 'Groq API key not set in .env' });
+    
+    // Groq format requires system prompt as part of messages array (OpenAI compatible)
+    const openAiMessages = [
+      { role: 'system', content: system || '' },
+      ...(messages || [])
+    ];
+
+    const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: model || 'claude-3-5-sonnet-20241022', max_tokens: max_tokens || 1000, system, messages }),
+      headers: { 
+        'Content-Type': 'application/json', 
+        'Authorization': `Bearer ${apiKey}` 
+      },
+      body: JSON.stringify({ 
+        model: 'llama-3.3-70b-versatile', // Using Groq's active Llama 3.3 70B model
+        max_tokens: max_tokens || 1000, 
+        messages: openAiMessages 
+      }),
     });
-    res.json(await r.json());
+    
+    const data = await r.json();
+    
+    // Map Groq (OpenAI style) response back to the format frontend expects (Anthropic style)
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      res.json({
+        content: [{ text: data.choices[0].message.content }]
+      });
+    } else {
+      res.json(data); // if error
+    }
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -390,3 +414,6 @@ app.listen(PORT, () => {
   console.log(`   App:  http://localhost:${PORT}`);
   console.log(`   Auth: http://localhost:${PORT}/auth`);
 });
+// Restarted server for .env updates
+// Restarted again for latest key update
+// Restarted for Groq key

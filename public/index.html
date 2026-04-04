@@ -1368,14 +1368,68 @@
       height: 420px;
       padding: 24px;
       gap: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .chat-msg.user {
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+
+    .chat-av {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .ai-av {
+      background: rgba(0, 245, 196, 0.15);
+      border: 1px solid rgba(0, 245, 196, 0.3);
+    }
+
+    .user-av {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .chat-bubble {
-      max-width: 82%;
+      max-width: 100%;
       padding: 14px 20px;
       border-radius: 18px;
       font-size: 15px;
       line-height: 1.6;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--accent);
+      color: #042a2b;
+      border-top-right-radius: 4px;
+    }
+
+    .chat-msg.ai .chat-bubble {
+      background: rgba(255, 255, 255, 0.08);
+      border-top-left-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-time {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      padding: 0 4px;
     }
 
     .ai-chat-input-row {
@@ -2765,7 +2819,7 @@
               <div class="ai-chat-hname">AI Clinical Assistant</div>
               <div class="ai-chat-hstatus">● Online — Ask any medical question</div>
             </div>
-            <div class="ai-chat-badge">Powered by Claude AI</div>
+            <div class="ai-chat-badge">Powered by Groq</div>
           </div>
 
           <!-- Quick Questions + INPUT (TOP — PEHLE SAWAAL) -->
@@ -2787,7 +2841,7 @@
               </button>
             </div>
             <div class="ai-chat-footer">
-              Enter = Send &nbsp;|&nbsp; Shift+Enter = New line &nbsp;|&nbsp; Powered by Claude AI • Medical guidance
+              Enter = Send &nbsp;|&nbsp; Shift+Enter = New line &nbsp;|&nbsp; Powered by Groq • Medical guidance
               only — final decision will be the doctor's
             </div>
           </div>
@@ -10836,7 +10890,10 @@ Aap ek friend doctor ki tarah baat karein — professional lekin warm aur helpfu
 
         const response = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getAuthToken()
+          },
           body: JSON.stringify({
             model: 'claude-3-5-sonnet-20241022',
             max_tokens: 1000,
@@ -10853,7 +10910,8 @@ Aap ek friend doctor ki tarah baat karein — professional lekin warm aur helpfu
           chatHistory.push({ role: 'assistant', content: reply });
           appendChatMsg('ai', reply);
         } else if (data.error) {
-          appendChatMsg('ai', '⚠️ Error: ' + (data.error.message || 'Kuch problem hui. Dobara try karein.'));
+          const errMsg = typeof data.error === 'string' ? data.error : data.error.message;
+          appendChatMsg('ai', '⚠️ Error: ' + (errMsg || 'Kuch problem hui. Dobara try karein.'));
         } else {
           appendChatMsg('ai', '⚠️ Response nahi aaya. Internet connection check karein aur dobara try karein.');
         }
