@@ -97,11 +97,14 @@ dbExec(`
   console.log('✅ Tables ready');
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@aidoctor.com';
   const adminPass = process.env.ADMIN_PASSWORD || 'admin1234';
-  const existingAdmin = await dbGet('SELECT id FROM doctors WHERE email=?', [adminEmail]);
+  const existingAdmin = await dbGet('SELECT id FROM doctors WHERE role=?', ['admin']);
+  const hashed = await bcrypt.hash(adminPass, 12);
   if (!existingAdmin) {
-    const hashed = await bcrypt.hash(adminPass, 12);
-    await dbRun("INSERT INTO doctors (name, email, password, qualification, role, account_status, subscription_type) VALUES ('Admin', ?, ?, 'Administrator', 'admin', 'active', 'lifetime')", [adminEmail, hashed]);
-    console.log('✅ Permanent Admin Account Loaded');
+    await dbRun("INSERT INTO doctors (name, email, password, qualification, role, account_status, subscription_type) VALUES ('Super Admin', ?, ?, 'Administrator', 'admin', 'active', 'lifetime')", [adminEmail, hashed]);
+    console.log('✅ Permanent Admin Account Created');
+  } else {
+    await dbRun("UPDATE doctors SET email=?, password=? WHERE role='admin'", [adminEmail, hashed]);
+    console.log('✅ Admin credentials synced with .env');
   }
 }).catch(err => console.error('❌ Database init error:', err));
 
