@@ -9707,8 +9707,134 @@
         child: {}
       },
 
-      // ── ADDED TO SMART_ALTS at bottom ────────────────────────
-
+      // ── PHASE 3: ADVANCED SYMPTOMS (A-Z) OVERRIDE ────────────────────────
+      toothache: {
+        label: 'Dant Dard (Toothache)',
+        adult: [
+          { name: 'Ketorolac DT 10mg', generic: 'Ketorol DT', cat: 'Dental NSAID', dosage: '1 tab dissolve in mouth/water twice daily SOS', duration: '2-3 days max', conf: 95, note: 'Fastest relief for severe toothache. See dentist.', triggered: 'Severe toothache' },
+          { name: 'Amoxicillin-Clavulanate 625mg', generic: 'Augmentin', cat: 'Dental Antibiotic', dosage: '625mg twice daily after food', duration: '5 days', conf: 90, note: 'If abscess or swelling is present.', triggered: 'Toothache with swelling' },
+          { name: 'Pantoprazole 40mg', generic: 'Pan-40', cat: 'PPI (Gastric Protector)', dosage: '40mg before breakfast', duration: '5 days', conf: 95, note: 'Auto: Protect stomach with NSAIDs', triggered: 'Auto: NSAID stomach protection' }
+        ],
+        child: {
+          '6-12': [{ name: 'Ibuprofen 200mg + Paracetamol 250mg', generic: 'Ibugesic Plus', cat: 'Analgesic (Paediatric)', dosage: '5ml twice daily', duration: '3 days', conf: 85, note: 'For child tooth pain.', triggered: 'Child toothache' }]
+        }
+      },
+      joint_pain: {
+        label: 'Jodo mein Dard (Joint Pain)',
+        adult: [
+          { name: 'Etoricoxib 90mg', generic: 'Nucoxia 90', cat: 'COX-2 Inhibitor (Joint Pain)', dosage: '1 tab once daily after food', duration: '5 days', conf: 92, note: 'Excellent for osteoarthritis or severe joint pain.', triggered: 'Severe joint pain' },
+          { name: 'Aceclofenac + Thiocolchicoside', generic: 'Zerodol-TH', cat: 'NSAID + Muscle Relaxant', dosage: '1 tab twice daily', duration: '5 days', conf: 88, note: 'If joint pain is associated with severe muscle spasm.', triggered: 'Joint + Muscle spasm' }
+        ],
+        child: {
+          '6-12': [{ name: 'Ibuprofen Suspension', generic: 'Brufen', cat: 'NSAID', dosage: 'As per weight', duration: '3 days', conf: 85, note: 'Check for growing pains vs injury.', triggered: 'Child joint pain' }]
+        }
+      },
+      muscle_cramp: {
+        label: 'Maanspheshiyon mein Khichaav',
+        adult: [
+          { name: 'Chlorzoxazone + Diclofenac', generic: 'Myoril / Relaxyl', cat: 'Muscle Relaxant Combo', dosage: '1 tab twice daily after meals', duration: '3-5 days', conf: 90, note: 'For severe muscle sprain or back strain.', triggered: 'Muscle cramp / strain' }
+        ],
+        child: {}
+      },
+      burning_urine: {
+        label: 'Peshaab mein Jalan (UTI)',
+        adult: [
+          { name: 'Nitrofurantoin 100mg', generic: 'Niftas SR', cat: 'UTI Antibiotic', dosage: '100mg twice daily', duration: '5 days', conf: 95, note: 'Take with food. Standard UTI treatment.', triggered: 'Urine burning' },
+          { name: 'Disodium Hydrogen Citrate', generic: 'Cital Syrup', cat: 'Urine Alkalizer', dosage: '2 tsp in water thrice daily', duration: '5 days', conf: 90, note: 'Relieves burning sensation instantly.', triggered: 'Urine burning relief' }
+        ],
+        child: {
+          '6-12': [{ name: 'Cefixime 100mg Syrup', generic: 'Zifi 100', cat: 'Antibiotic (Paediatric UTI)', dosage: '5ml twice daily', duration: '5 days', conf: 85, note: 'Confirm with urine culture if possible.', triggered: 'Child UTI' }]
+        }
+      },
+      red_eye: {
+        label: 'Aankh Aana / Conjunctivitis',
+        adult: [
+          { name: 'Moxifloxacin 0.5% Eye Drops', generic: 'Moxicip / Milflox', cat: 'Antibiotic Eye Drops', dosage: '1 drop in affected eye 4 times a day', duration: '5 days', conf: 92, note: 'For bacterial conjunctivitis (red eye with discharge).', triggered: 'Red eye' },
+          { name: 'Carboxymethylcellulose 0.5%', generic: 'Refresh Tears', cat: 'Lubricant Eye Drops', dosage: '1 drop 3 times a day', duration: 'As needed', conf: 88, note: 'For eye strain or dry eyes.', triggered: 'Eye strain' }
+        ],
+        child: {
+          '3-12': [{ name: 'Tobramycin Eye Drops', generic: 'Toba', cat: 'Antibiotic Drops (Paediatric)', dosage: '1 drop 3 times a day', duration: '5 days', conf: 85, note: 'Safe for children.', triggered: 'Child red eye' }]
+        }
+      },
+      earache: {
+        label: 'Kaan Dard (Earache)',
+        adult: [
+          { name: 'Paradichlorobenzene + Benzocaine', generic: 'Clearwax Drops', cat: 'Ear Wax Dissolver', dosage: '3 drops twice daily', duration: '3 days', conf: 85, note: 'Only if pain is due to hard wax buildup.', triggered: 'Ear block/pain' },
+          { name: 'Ofloxacin + Beclomethasone Drops', generic: 'Otocin / Otek-AC', cat: 'Antibiotic Ear Drops', dosage: '3 drops twice daily', duration: '5 days', conf: 90, note: 'For outer or middle ear infections.', triggered: 'Ear pain/discharge' }
+        ],
+        child: {
+          '3-12': [{ name: 'Paracetamol Syrup', generic: 'Calpol', cat: 'Analgesic', dosage: 'As per weight', duration: '3 days', conf: 88, note: 'Oral pain relief is primary for child earache.', triggered: 'Child earache' }]
+        }
+      },
+      itching: {
+        label: 'Khujli (Itching)',
+        adult: [
+          { name: 'Levocetirizine + Montelukast', generic: 'Montair LC', cat: 'Antihistamine Combo', dosage: '1 tab at night', duration: '5-10 days', conf: 92, note: 'For severe itching or hives (urticaria).', triggered: 'Itching/Rash' },
+          { name: 'Calamine Lotion', generic: 'Caladryl', cat: 'Topical Soothing', dosage: 'Apply on affected areas', duration: 'As needed', conf: 85, note: 'Cooling effect for rashes.', triggered: 'Skin rash' }
+        ],
+        child: {
+          '3-12': [{ name: 'Cetirizine Syrup', generic: 'Zyrtec', cat: 'Antihistamine (Paediatric)', dosage: '2.5ml to 5ml once daily', duration: '5 days', conf: 88, note: 'Relieves child itching/allergy.', triggered: 'Child allergy' }]
+        }
+      },
+      fungal: {
+        label: 'Daad / Fungal Infection',
+        adult: [
+          { name: 'Luliconazole 1% Cream', generic: 'Lulifin / Lulimac', cat: 'Topical Antifungal', dosage: 'Apply once daily at night', duration: '14-21 days', conf: 95, note: 'Apply 2cm beyond the rash border.', triggered: 'Fungal/Ringworm' },
+          { name: 'Itraconazole 100mg', generic: 'Canditral', cat: 'Oral Antifungal', dosage: '1 cap once daily after food', duration: '14 days', conf: 85, note: 'For stubborn or extensive fungal infections.', triggered: 'Severe Fungal' }
+        ],
+        child: {
+          '3-12': [{ name: 'Clotrimazole 1% Cream', generic: 'Candid Cream', cat: 'Antifungal', dosage: 'Apply twice daily', duration: '14 days', conf: 88, note: 'Safe topical for children.', triggered: 'Child fungal' }]
+        }
+      },
+      women_sym: {
+        label: 'Mahila Samasya',
+        adult: [
+          { name: 'Mefenamic Acid 250mg + Dicyclomine', generic: 'Meftal-Spas', cat: 'Menstrual Cramp Relief', dosage: '1 tab thrice daily SOS', duration: 'During periods', conf: 95, note: 'Gold standard for period pain.', triggered: 'Dysmenorrhea' },
+          { name: 'Fluconazole 150mg', generic: 'Syscan 150 / Zocon', cat: 'Oral Antifungal', dosage: '1 tablet STAT (single dose)', duration: 'Single Dose', conf: 90, note: 'For vaginal yeast infection (white discharge/itching).', triggered: 'Vaginal discharge/itching' },
+          { name: 'Clotrimazole Vaginal Gel/Suppository', generic: 'Candid V-Gel', cat: 'Topical Antifungal', dosage: 'Insert at bedtime', duration: '3-6 nights', conf: 88, note: 'Local relief for yeast infection.', triggered: 'Vaginal infection' }
+        ],
+        child: {}
+      },
+      men_sym: {
+        label: 'Purush Samasya',
+        adult: [
+          { name: 'Tamsulosin 0.4mg', generic: 'Veltam / Urimax', cat: 'Alpha Blocker (Prostate)', dosage: '1 cap at night', duration: 'Long-term', conf: 92, note: 'Improves urine flow in older men with enlarged prostate.', triggered: 'Prostate issues' },
+          { name: 'Urologist Consult (PDE5 inhibitor)', generic: 'Referral', cat: 'ED Treatment', dosage: 'As prescribed', duration: 'N/A', conf: 85, note: 'Requires proper cardiac evaluation before PDE5 inhibitors.', triggered: 'Male performance issues' }
+        ],
+        child: {}
+      },
+      piles: {
+        label: 'Bawaseer / Piles',
+        adult: [
+          { name: 'Daflon 500mg', generic: 'Micronized Flavonoid', cat: 'Venotonic (Piles)', dosage: '2 tabs twice daily', duration: '4 days, then taper', conf: 92, note: 'Shrinks bleeding hemorrhoids rapidly.', triggered: 'Bleeding Piles' },
+          { name: 'Lignocaine + Hydrocortisone Cream', generic: 'Smuth Cream / Anovate', cat: 'Topical Anesthetic', dosage: 'Apply before and after passing stool', duration: 'As needed', conf: 90, note: 'Relieves pain and itching instantly.', triggered: 'Painful piles' },
+          { name: 'Lactulose Solution', generic: 'Duphalac', cat: 'Stool Softener', dosage: '15ml at night with water', duration: 'As needed', conf: 85, note: 'Prevents straining during bowel movements.', triggered: 'Constipation/Piles' }
+        ],
+        child: {}
+      },
+      sleep_sym: {
+        label: 'Neend / Anxiety',
+        adult: [
+          { name: 'Melatonin 3mg', generic: 'Meloset', cat: 'Sleep Aid', dosage: '1 tab 30 mins before bed', duration: '14 days', conf: 88, note: 'Safe, non-habit forming sleep cycle corrector.', triggered: 'Insomnia' },
+          { name: 'Ashwagandha 600mg', generic: 'KSM-66', cat: 'Adaptogen', dosage: '600mg with warm milk at night', duration: '1-3 months', conf: 85, note: 'Reduces cortisol and anxiety naturally.', triggered: 'Anxiety/Stress' }
+        ],
+        child: {}
+      },
+      chest_sym: {
+        label: 'Seena / Chest Pain',
+        adult: [
+          { name: 'Pantoprazole 40mg + Domperidone 30mg SR', generic: 'Pan-D', cat: 'PPI + Prokinetic', dosage: '1 cap empty stomach morning', duration: '7 days', conf: 90, note: 'If chest pain is burning/gas related (GERD).', triggered: 'Gastric chest pain' },
+          { name: 'Aspirin 300mg + ER Referral', generic: 'Disprin + Hospital', cat: 'Emergency Cardiac', dosage: 'Chew 1 tab immediately', duration: 'Stat', conf: 98, note: 'If chest pain is heavy, radiating to left arm/jaw. DO NOT DELAY.', triggered: 'Cardiac chest pain' }
+        ],
+        child: {}
+      },
+      neuro_pain: {
+        label: 'Naso ka Dard',
+        adult: [
+          { name: 'Pregabalin 75mg + Methylcobalamin', generic: 'Pregalin M 75 / Maxgalin M', cat: 'Neuropathic Pain Combo', dosage: '1 cap at night', duration: '14 days', conf: 92, note: 'For sciatica, nerve shooting pain, or diabetic neuropathy.', triggered: 'Nerve pain' }
+        ],
+        child: {}
+      }
     };
 
     // ── getAISymMeds: New AI decision function ────────────────────────────
