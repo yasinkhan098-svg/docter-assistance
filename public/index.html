@@ -4862,6 +4862,173 @@
         ]
       },
 
+      // ── PHASE 2: ADVANCED LAB BASED (A-Z) ──────────────────────────────
+      // 1. Urine Analysis
+      {
+        id: 'urine_uti', label: 'Urinary Tract Infection (UTI)',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'u_wbc', op: '>', val: 5 }, { type: 'lab', key: 'u_nitrite', op: '>', val: 0 }],
+        conditions: [{ name: 'Urinary Tract Infection (UTI)', sev: 'moderate' }],
+        meds: [
+          { name: 'Nitrofurantoin 100mg', generic: 'Nitrofur SR / Niftas', cat: 'Antibiotic (Urinary)', dosage: '100mg twice daily', duration: '5-7 days', conf: 92, note: 'Take with food to avoid nausea.', triggered: 'Pus cells or Nitrite positive' },
+          { name: 'Disodium Hydrogen Citrate', generic: 'Cital / Alka-Citrate', cat: 'Urine Alkalizer', dosage: '2 tsp in a glass of water thrice daily', duration: '5 days', conf: 88, note: 'Relieves burning sensation in urine.', triggered: 'UTI' }
+        ]
+      },
+      {
+        id: 'urine_proteinuria', label: 'Proteinuria (Kidney Warning)',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'u_prot', op: '>', val: 14 }],
+        conditions: [{ name: 'Proteinuria (Protein in Urine)', sev: 'severe' }],
+        meds: [
+          { name: 'Nephrologist Consultation', generic: 'Referral', cat: 'Consult', dosage: 'Immediate checkup', duration: 'N/A', conf: 95, note: 'Evaluate for CKD or Nephrotic Syndrome.', triggered: 'Protein > 14' }
+        ]
+      },
+      {
+        id: 'urine_hematuria', label: 'Hematuria (Blood in Urine)',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'u_rbc', op: '>', val: 2 }],
+        conditions: [{ name: 'Hematuria (Blood in Urine)', sev: 'moderate' }],
+        meds: [
+          { name: 'Ultrasound KUB', generic: 'Imaging', cat: 'Diagnostic', dosage: 'Rule out kidney stones/infection', duration: 'N/A', conf: 90, note: 'Urologist consult recommended.', triggered: 'RBC in Urine' }
+        ]
+      },
+
+      // 2. Cardiac Panel
+      {
+        id: 'cardiac_mi', label: 'Myocardial Infarction Risk',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'troponin', op: '>', val: 0.04 }, { type: 'lab', key: 'ckmb', op: '>', val: 25 }],
+        conditions: [{ name: 'Myocardial Infarction (Heart Attack Risk)', sev: 'severe' }],
+        meds: [
+          { name: 'EMERGENCY CARDIOLOGIST CONSULT', generic: 'ER Visit', cat: 'Emergency', dosage: 'Immediate', duration: 'Immediate', conf: 98, note: 'Do not delay. Proceed to emergency room.', triggered: 'High Troponin & CK-MB' },
+          { name: 'Aspirin 300mg + Clopidogrel 300mg + Rosuvastatin 40mg', generic: 'Loading Dose', cat: 'Antiplatelet/Statin', dosage: 'Stat dose under medical supervision', duration: 'Stat', conf: 85, note: 'ONLY under direct medical supervision for acute MI.', triggered: 'MI Protocol' }
+        ]
+      },
+      {
+        id: 'cardiac_hf', label: 'Heart Failure Risk',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'bnp', op: '>', val: 100 }, { type: 'lab', key: 'nt_probnp', op: '>', val: 125 }],
+        conditions: [{ name: 'Congestive Heart Failure Risk', sev: 'severe' }],
+        meds: [
+          { name: 'Cardiologist Consultation', generic: 'Referral', cat: 'Consult', dosage: 'Evaluate for diuretics (e.g., Furosemide)', duration: 'N/A', conf: 92, note: 'Requires Echo and proper fluid management.', triggered: 'Elevated BNP/NT-proBNP' }
+        ]
+      },
+
+      // 3. Vitamins & Minerals
+      {
+        id: 'vit_d_def', label: 'Vitamin D Deficiency',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'vitd', op: '<', val: 30 }],
+        conditions: [{ name: 'Vitamin D Deficiency', sev: 'moderate' }],
+        meds: [
+          { name: 'Cholecalciferol 60,000 IU', generic: 'Calcirol / Uprise-D3', cat: 'Vitamin D', dosage: '1 sachet/capsule once a week with milk', duration: '8 weeks', conf: 95, note: 'Maintain sun exposure.', triggered: 'Vit D < 30' }
+        ]
+      },
+      {
+        id: 'vit_b12_def', label: 'Vitamin B12 Deficiency',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'vitb12', op: '<', val: 200 }],
+        conditions: [{ name: 'Vitamin B12 Deficiency', sev: 'moderate' }],
+        meds: [
+          { name: 'Methylcobalamin 1500mcg', generic: 'Mecobalamin / Nurokind', cat: 'Vitamin B12', dosage: '1 tab once daily', duration: '2-3 months', conf: 92, note: 'May require injections if severe neurological symptoms exist.', triggered: 'Vit B12 < 200' }
+        ]
+      },
+      {
+        id: 'iron_def', label: 'Iron Deficiency',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ferritin', op: '<', val: 12 }, { type: 'lab', key: 'iron', op: '<', val: 60 }],
+        conditions: [{ name: 'Iron Deficiency', sev: 'moderate' }],
+        meds: [
+          { name: 'Ferrous Ascorbate + Folic Acid', generic: 'Orofer XT / Dexorange', cat: 'Iron Supplement', dosage: '1 tab once daily after meals', duration: '3 months', conf: 92, note: 'Avoid taking with calcium/tea.', triggered: 'Low Iron/Ferritin' }
+        ]
+      },
+
+      // 4. Bone & Joint
+      {
+        id: 'bone_ra', label: 'Rheumatoid Arthritis',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ra', op: '>', val: 14 }, { type: 'lab', key: 'anti_ccp', op: '>', val: 20 }],
+        conditions: [{ name: 'Rheumatoid Arthritis (RA)', sev: 'severe' }],
+        meds: [
+          { name: 'Rheumatologist Consultation', generic: 'Referral', cat: 'Consult', dosage: 'For DMARD therapy (Methotrexate, HCQS)', duration: 'Long-term', conf: 95, note: 'Requires specialized care to prevent joint damage.', triggered: 'RA Factor & Anti-CCP High' },
+          { name: 'Aceclofenac + Paracetamol', generic: 'Zerodol-P', cat: 'NSAID', dosage: '1 tab twice daily after food SOS', duration: 'For acute pain', conf: 85, note: 'Symptom relief only.', triggered: 'Joint Pain/RA' }
+        ]
+      },
+      {
+        id: 'autoimmune_ana', label: 'Autoimmune Positive',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ana', op: '>', val: 0 }],
+        conditions: [{ name: 'Autoimmune Suspicion (ANA Positive)', sev: 'severe' }],
+        meds: [
+          { name: 'Immunologist/Rheumatologist Consult', generic: 'Referral', cat: 'Consult', dosage: 'Specialized evaluation', duration: 'N/A', conf: 95, note: 'Further ENA profile required to diagnose SLE/Lupus.', triggered: 'ANA Positive' }
+        ]
+      },
+
+      // 5. Female Gynaecology
+      {
+        id: 'female_pcos', label: 'PCOS Suspected',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'lh', op: '>', val: 12 }, { type: 'lab', key: 'fsh', op: '<', val: 6 }],
+        conditions: [{ name: 'Polycystic Ovary Syndrome (PCOS)', sev: 'moderate' }],
+        meds: [
+          { name: 'Myo-Inositol + D-Chiro Inositol', generic: 'Ovares / Normoz', cat: 'Supplement', dosage: '1 tab once daily', duration: '3-6 months', conf: 85, note: 'Improves insulin sensitivity in PCOS.', triggered: 'High LH/FSH ratio' },
+          { name: 'Gynaecologist Consultation', generic: 'Referral', cat: 'Consult', dosage: 'Evaluate for hormonal therapy', duration: 'N/A', conf: 90, note: 'Ultrasound Pelvis required for confirmation.', triggered: 'PCOS suspect' }
+        ]
+      },
+
+      // 6. Male Urology
+      {
+        id: 'male_psa', label: 'Prostate Risk',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'psa', op: '>', val: 4.0 }],
+        conditions: [{ name: 'Prostate Enlargement / Risk', sev: 'severe' }],
+        meds: [
+          { name: 'Urologist Consultation', generic: 'Referral', cat: 'Consult', dosage: 'Immediate review', duration: 'N/A', conf: 95, note: 'Rule out prostate cancer/BPH.', triggered: 'PSA > 4.0' },
+          { name: 'Tamsulosin 0.4mg', generic: 'Veltam / Urimax', cat: 'Alpha Blocker', dosage: '0.4mg once at night', duration: 'Long-term', conf: 80, note: 'Only if prescribed by urologist for urine retention.', triggered: 'BPH Suspect' }
+        ]
+      },
+
+      // 7. Pancreas / Enzymes
+      {
+        id: 'pancreas_acute', label: 'Acute Pancreatitis',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'amylase', op: '>', val: 300 }, { type: 'lab', key: 'lipase', op: '>', val: 160 }],
+        conditions: [{ name: 'Acute Pancreatitis', sev: 'severe' }],
+        meds: [
+          { name: 'EMERGENCY HOSPITALIZATION', generic: 'ER Admission', cat: 'Emergency', dosage: 'NPO (Nil Per Os), IV Fluids', duration: 'Immediate', conf: 98, note: 'Life-threatening if untreated. Strict fasting required.', triggered: 'High Amylase & Lipase' }
+        ]
+      },
+
+      // 8. Coagulation / Clotting
+      {
+        id: 'coag_dvt', label: 'Thrombosis Risk (DVT/PE)',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ddimer', op: '>', val: 500 }],
+        conditions: [{ name: 'High Clotting Risk / Thrombosis', sev: 'severe' }],
+        meds: [
+          { name: 'Vascular Consult / ER', generic: 'Referral', cat: 'Emergency', dosage: 'Evaluate for DVT / PE', duration: 'Immediate', conf: 95, note: 'High risk of blood clots. Doppler ultrasound may be needed.', triggered: 'D-Dimer > 500' }
+        ]
+      },
+
+      // 9. Infection / Immunity (Stomach/Typhoid)
+      {
+        id: 'infect_typhoid', label: 'Typhoid Fever',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'widal_o', op: '>', val: 0 }, { type: 'lab', key: 'widal_h', op: '>', val: 0 }, { type: 'lab', key: 'gi_widal_o', op: '>', val: 0 }, { type: 'lab', key: 'gi_widal_h', op: '>', val: 0 }, { type: 'lab', key: 'gi_typhi_ag', op: '>', val: 0 }],
+        conditions: [{ name: 'Typhoid Fever (Enteric Fever)', sev: 'moderate' }],
+        meds: [
+          { name: 'Cefixime 200mg', generic: 'Zifi 200', cat: 'Antibiotic', dosage: '200mg twice daily', duration: '7-14 days', conf: 88, note: 'Complete the course to prevent relapse.', triggered: 'Positive Widal / Typhidot' }
+        ]
+      },
+      {
+        id: 'infect_hpylori', label: 'H. Pylori Infection',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'st_hpylori', op: '>', val: 0 }, { type: 'lab', key: 'gi_hpylori_st', op: '>', val: 0 }],
+        conditions: [{ name: 'Helicobacter Pylori Infection (Gastritis/Ulcer)', sev: 'moderate' }],
+        meds: [
+          { name: 'HP Kit (Amoxicillin + Clarithromycin + PPI)', generic: 'PyloKit / HP-Kit', cat: 'Eradication Kit', dosage: '1 kit (morning/evening) daily', duration: '14 days', conf: 95, note: 'Standard triple therapy for H.Pylori.', triggered: 'H.Pylori Positive' }
+        ]
+      },
       // ── ADVANCED LIVER LOGIC ──
       {
         id: 'gilberts_syndrome', label: 'Gilbert\'s Syndrome',
