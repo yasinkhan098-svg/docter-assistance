@@ -4013,6 +4013,7 @@
           { id: 'alp', label: 'Alkaline Phosphatase', unit: 'U/L', min: 44, max: 147, step: 1, ph: '80', note: '44-147' },
           { id: 'tbil', label: 'Total Bilirubin', unit: 'mg/dL', min: .2, max: 1.2, step: .1, ph: '0.8', note: '0.2-1.2' },
           { id: 'dbil', label: 'Direct Bilirubin', unit: 'mg/dL', min: 0, max: .3, step: .01, ph: '0.1', note: '0-0.3' },
+          { id: 'ibil', label: 'Indirect Bilirubin', unit: 'mg/dL', min: 0.2, max: 0.8, step: .01, ph: '0.5', note: '0.2-0.8' },
           { id: 'alb', label: 'Albumin', unit: 'g/dL', min: 3.4, max: 5.4, step: .1, ph: '4.5', note: '3.4-5.4' },
           { id: 'ggt', label: 'GGT', unit: 'U/L', min: 9, max: 48, step: 1, ph: '25', note: 'M:≤48 F:≤36' },
           { id: 'tp', label: 'Total Protein', unit: 'g/dL', min: 6, max: 8.3, step: .1, ph: '7', note: '6-8.3' },
@@ -4786,23 +4787,80 @@
           { name: 'Sevelamer 800mg', generic: 'Renagel', cat: 'Phosphate Binder', dosage: '800mg thrice daily with meals', duration: 'Long-term', conf: 72, note: 'Reduces phosphate in CKD', triggered: 'Kidney impairment' },
         ]
       },
+      // ── ADVANCED LIVER LOGIC ──
       {
-        id: 'liver_dysfunction', label: 'Liver Dysfunction',
-        triggers: [{ type: 'lab', key: 'sgot', op: '>', val: 40 }, { type: 'lab', key: 'sgpt', op: '>', val: 56 }],
-        conditions: [{ name: 'Liver Dysfunction (Elevated Enzymes)', sev: 'moderate' }],
+        id: 'gilberts_syndrome', label: 'Gilbert\'s Syndrome',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ibil', op: '>', val: 0.8 }, { type: 'lab', key: 'sgpt', op: '<=', val: 56 }, { type: 'lab', key: 'dbil', op: '<=', val: 0.3 }],
+        conditions: [{ name: 'Gilbert\'s Syndrome (Benign Hyperbilirubinemia)', sev: 'mild' }],
         meds: [
-          { name: 'Silymarin 140mg', generic: 'Milk Thistle / Silymarin', cat: 'Hepatoprotective', dosage: '140mg thrice daily', duration: '1-3 months', conf: 85, note: 'Liver cell protection and repair', triggered: 'SGOT/SGPT elevated' },
-          { name: 'UDCA 300mg', generic: 'Ursofalk / Ursodeoxycholic Acid', cat: 'Bile Acid (Hepatoprotective)', dosage: '300mg twice daily at night', duration: '3-6 months', conf: 80, note: 'Improves bile flow. Especially for fatty liver.', triggered: 'Liver enzymes high' },
-          { name: 'Ademetionine 400mg', generic: 'SAMe', cat: 'Hepatoprotective (SAMe)', dosage: '400mg twice daily before meals', duration: '2-4 weeks', conf: 75, note: 'For alcoholic and non-alcoholic liver disease', triggered: 'Liver dysfunction' },
+          { name: 'Silymarin 140mg', generic: 'Milk Thistle / Silymarin', cat: 'Hepatoprotective', dosage: '140mg once daily', duration: '1 month (optional)', conf: 90, note: 'Benign condition. Avoid stress and fasting.', triggered: 'High Indirect Bilirubin only' },
         ]
       },
       {
-        id: 'jaundice', label: 'Jaundice (High Bilirubin)',
-        triggers: [{ type: 'lab', key: 'tbil', op: '>', val: 1.2 }],
-        conditions: [{ name: 'Hyperbilirubinemia / Jaundice', sev: 'moderate' }],
+        id: 'fatty_liver', label: 'Fatty Liver (NAFLD)',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'sgpt', op: '>', val: 56 }, { type: 'lab', key: 'sgpt', op: '<', val: 200 }],
+        conditions: [{ name: 'Non-Alcoholic Fatty Liver Disease (NAFLD)', sev: 'moderate' }],
         meds: [
-          { name: 'Silymarin 140mg', generic: 'Milk Thistle', cat: 'Hepatoprotective', dosage: '140mg thrice daily', duration: '1 month', conf: 82, note: 'Liver support during jaundice', triggered: 'Bilirubin >1.2' },
-          { name: 'Phenobarbitone 30mg', generic: 'Phenobarbitone', cat: 'Enzyme Inducer (Neonatal Jaundice)', dosage: '30mg at night (adults)', duration: 'As directed', conf: 68, note: 'For neonatal jaundice and cholestasis only', triggered: 'High bilirubin' },
+          { name: 'UDCA 300mg', generic: 'Ursodeoxycholic Acid', cat: 'Bile Acid', dosage: '300mg twice daily', duration: '3-6 months', conf: 85, note: 'Improves bile flow and liver enzymes.', triggered: 'Mild SGPT elevation' },
+          { name: 'Vitamin E 400 IU', generic: 'Evion 400', cat: 'Antioxidant', dosage: '400 IU once daily', duration: '3 months', conf: 80, note: 'Reduces liver fat and oxidative stress.', triggered: 'Fatty Liver' },
+        ]
+      },
+      {
+        id: 'alcoholic_liver', label: 'Alcoholic Liver Disease',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'sgot', op: '>', val: 56 }, { type: 'lab', key: 'ggt', op: '>', val: 50 }],
+        conditions: [{ name: 'Alcoholic Liver Disease / Severe Damage', sev: 'severe' }],
+        meds: [
+          { name: 'Ademetionine 400mg', generic: 'SAMe', cat: 'Hepatoprotective', dosage: '400mg twice daily before meals', duration: '2-4 weeks', conf: 85, note: 'Essential for alcoholic liver disease. STRICT NO ALCOHOL.', triggered: 'High SGOT and GGT' },
+          { name: 'Silymarin 140mg', generic: 'Liv52 / Silybon', cat: 'Hepatoprotective', dosage: '140mg thrice daily', duration: '3 months', conf: 80, note: 'Liver cell regeneration.', triggered: 'Liver damage' },
+        ]
+      },
+      {
+        id: 'acute_hepatitis', label: 'Acute Viral Hepatitis',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'sgpt', op: '>', val: 200 }, { type: 'lab', key: 'tbil', op: '>', val: 2.0 }],
+        conditions: [{ name: 'Acute Viral Hepatitis / Severe Jaundice', sev: 'severe' }],
+        meds: [
+          { name: 'L-Ornithine L-Aspartate', generic: 'Hepamerz', cat: 'Hepatoprotective', dosage: '1 sachet in water twice daily', duration: '2 weeks', conf: 90, note: 'Reduces ammonia levels in severe jaundice.', triggered: 'Very High SGPT & Bilirubin' },
+          { name: 'Silymarin 140mg', generic: 'Milk Thistle', cat: 'Hepatoprotective', dosage: '140mg thrice daily', duration: '1-3 months', conf: 85, note: 'Liver support.', triggered: 'Acute Hepatitis' },
+        ]
+      },
+      {
+        id: 'obstructive_jaundice', label: 'Obstructive Jaundice',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'alp', op: '>', val: 150 }, { type: 'lab', key: 'dbil', op: '>', val: 0.5 }],
+        conditions: [{ name: 'Obstructive Jaundice / Cholestasis', sev: 'severe' }],
+        meds: [
+          { name: 'UDCA 300mg', generic: 'Udiliv', cat: 'Bile Acid', dosage: '300mg twice daily', duration: '3-6 months', conf: 88, note: 'For cholestatic liver disease. USG Abdomen required.', triggered: 'High ALP and Direct Bilirubin' },
+        ]
+      },
+      {
+        id: 'liver_cirrhosis', label: 'Liver Cirrhosis',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'alb', op: '<', val: 3.4 }, { type: 'lab', key: 'tbil', op: '>', val: 1.5 }],
+        conditions: [{ name: 'Suspected Liver Cirrhosis', sev: 'severe' }],
+        meds: [
+          { name: 'BCAA Powder', generic: 'Renastart / HepaPro', cat: 'Nutritional Supplement', dosage: '1 scoop twice daily', duration: 'Long-term', conf: 85, note: 'Essential amino acids for cirrhotic patients.', triggered: 'Low Albumin and High Bilirubin' },
+          { name: 'Spironolactone 50mg', generic: 'Aldactone', cat: 'Diuretic', dosage: '50mg once daily morning', duration: 'As directed', conf: 75, note: 'For ascites/edema management. Monitor potassium.', triggered: 'Cirrhosis' },
+        ]
+      },
+      {
+        id: 'hemolytic_anemia', label: 'Hemolytic Anemia',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ibil', op: '>', val: 1.5 }, { type: 'lab', key: 'hb', op: '<', val: 11 }],
+        conditions: [{ name: 'Hemolytic Jaundice / Anemia', sev: 'severe' }],
+        meds: [
+          { name: 'Folic Acid 5mg', generic: 'Folvite', cat: 'Vitamin', dosage: '5mg once daily', duration: '3 months', conf: 90, note: 'Supports RBC production in hemolysis. Hematology consult needed.', triggered: 'High Indirect Bilirubin & Low Hb' },
+        ]
+      },
+      {
+        id: 'liver_dysfunction_mild', label: 'Mild Liver Dysfunction',
+        triggers: [{ type: 'lab', key: 'sgpt', op: '>', val: 40 }, { type: 'lab', key: 'sgot', op: '>', val: 40 }],
+        conditions: [{ name: 'Mild Liver Dysfunction (Elevated Enzymes)', sev: 'mild' }],
+        meds: [
+          { name: 'Silymarin 140mg', generic: 'Milk Thistle / Silymarin', cat: 'Hepatoprotective', dosage: '140mg thrice daily', duration: '1-3 months', conf: 85, note: 'Liver cell protection and repair.', triggered: 'SGOT/SGPT elevated' },
         ]
       },
       {
@@ -9654,7 +9712,9 @@
       // Run all rules from MEDICINE_DB
       MEDICINE_DB.forEach(rule => {
         if (!rule.triggers.length) return; // special rules handled below
-        const fired = rule.triggers.some(tr => evalTrigger(tr, d));
+        const fired = rule.triggerMode === 'AND' 
+          ? rule.triggers.every(tr => evalTrigger(tr, d)) 
+          : rule.triggers.some(tr => evalTrigger(tr, d));
         if (!fired) return;
 
         rule.conditions.forEach(c => conditions.push(c));
