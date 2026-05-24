@@ -4679,87 +4679,180 @@
         ]
       },
 
-      // ── LAB BASED ──────────────────────────────────────────────
+      // ── ADVANCED LAB BASED (A-Z) ──────────────────────────────
+      // 1. CBC / Hematology
       {
-        id: 'bacterial_inf', label: 'Bacterial Infection (High WBC)',
-        triggers: [{ type: 'lab', key: 'wbc', op: '>', val: 11000 }],
-        conditions: [{ name: 'Bacterial Infection (Leukocytosis)', sev: 'moderate' }],
+        id: 'microcytic_anemia', label: 'Microcytic Anemia',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'hb', op: '<', val: 12 }, { type: 'lab', key: 'mcv', op: '<', val: 80 }],
+        conditions: [{ name: 'Microcytic Anemia (Iron Deficiency Suspected)', sev: 'moderate' }],
         meds: [
-          { name: 'Amoxicillin-Clavulanate 625mg', generic: 'Augmentin / Co-Amoxiclav', cat: 'Antibiotic (Penicillin)', dosage: '625mg twice daily after food', duration: '7 days', conf: 84, note: 'Avoid if Penicillin allergy. Broad spectrum.', triggered: 'WBC >11000' },
-          { name: 'Azithromycin 500mg', generic: 'Zithromax', cat: 'Antibiotic (Macrolide)', dosage: '500mg once daily', duration: '5 days', conf: 80, note: 'Alt. for Penicillin allergy. Z-pack.', triggered: 'Bacterial infection (Alt)' },
-          { name: 'Cefuroxime Axetil 500mg', generic: 'Cefuroxime', cat: 'Antibiotic (Cephalosporin)', dosage: '500mg twice daily after food', duration: '7 days', conf: 82, note: '2nd gen — good for respiratory infections', triggered: 'Bacterial infection' },
+          { name: 'Ferrous Ascorbate + Folic Acid', generic: 'Orofer-XT / Dexorange', cat: 'Haematinic (Iron)', dosage: '1 tab twice daily 30 min before food', duration: '3 months', conf: 92, note: 'Take with Vit-C juice. Avoid with tea/coffee.', triggered: 'Low Hb & Low MCV' },
+          { name: 'Vitamin C 500mg', generic: 'Ascorbic Acid', cat: 'Vitamin', dosage: '500mg once daily', duration: '3 months', conf: 88, note: 'Increases iron absorption.', triggered: 'Iron Deficiency' }
         ]
       },
       {
-        id: 'viral_inf', label: 'Viral Infection (Low WBC)',
-        triggers: [{ type: 'lab', key: 'wbc', op: '<', val: 4000 }],
-        conditions: [{ name: 'Viral Infection / Leukopenia', sev: 'moderate' }],
+        id: 'macrocytic_anemia', label: 'Macrocytic Anemia',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'hb', op: '<', val: 12 }, { type: 'lab', key: 'mcv', op: '>', val: 100 }],
+        conditions: [{ name: 'Macrocytic Anemia (B12/Folate Deficiency Suspected)', sev: 'moderate' }],
         meds: [
-          { name: 'Oseltamivir 75mg', generic: 'Tamiflu', cat: 'Antiviral', dosage: '75mg twice daily', duration: '5 days', conf: 74, note: 'Most effective within 48hrs of onset', triggered: 'WBC <4000' },
+          { name: 'Methylcobalamin 1500mcg', generic: 'Mecobalamin', cat: 'Vitamin B12', dosage: '1500mcg once daily', duration: '3 months', conf: 90, note: 'For B12 deficiency anemia.', triggered: 'Low Hb & High MCV' },
+          { name: 'Folic Acid 5mg', generic: 'Folvite', cat: 'Vitamin', dosage: '5mg once daily', duration: '3 months', conf: 85, note: 'For folate deficiency.', triggered: 'Macrocytic Anemia' }
         ]
       },
       {
-        id: 'anemia', label: 'Anemia (Low Hb)',
-        triggers: [{ type: 'lab', key: 'hb', op: '<', val: 12 }],
-        conditions: [{ name: 'Iron Deficiency Anemia', sev: 'moderate' }],
+        id: 'normocytic_anemia', label: 'Normocytic Anemia',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'hb', op: '<', val: 12 }, { type: 'lab', key: 'mcv', op: '>=', val: 80 }, { type: 'lab', key: 'mcv', op: '<=', val: 100 }],
+        conditions: [{ name: 'Normocytic Anemia (Chronic Disease / Blood Loss)', sev: 'moderate' }],
         meds: [
-          { name: 'Ferrous Ascorbate + Folic Acid', generic: 'Orofer-XT / Dexorange', cat: 'Haematinic (Iron)', dosage: '1 tab twice daily 30 min before food', duration: '3 months', conf: 92, note: 'Take with Vit-C juice. Avoid with tea/coffee.', triggered: 'Hb <12 g/dL' },
-          { name: 'Methylcobalamin 1500mcg', generic: 'Mecobalamin', cat: 'Vitamin B12', dosage: '1500mcg once daily', duration: '3 months', conf: 85, note: 'Nerve protection + blood cell formation', triggered: 'Low Hb' },
-          { name: 'Vitamin C 500mg', generic: 'Ascorbic Acid', cat: 'Vitamin C', dosage: '500mg once daily with iron tablet', duration: '3 months', conf: 88, note: 'Increases iron absorption significantly', triggered: 'Anemia — iron absorption' },
+          { name: 'Ferrous Ascorbate + Folic Acid', generic: 'Orofer-XT', cat: 'Haematinic', dosage: '1 tab once daily', duration: '1 month', conf: 80, note: 'Basic iron support. Investigate underlying cause.', triggered: 'Low Hb & Normal MCV' }
         ]
       },
       {
-        id: 'hypothyroid', label: 'Hypothyroidism',
-        triggers: [{ type: 'lab', key: 'tsh', op: '>', val: 4.0 }],
-        conditions: [{ name: 'Hypothyroidism (High TSH)', sev: 'moderate' }],
+        id: 'leukocytosis', label: 'Leukocytosis (Infection)',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'wbc', op: '>', val: 11000 }, { type: 'lab', key: 'neutro', op: '>', val: 70 }],
+        conditions: [{ name: 'Bacterial Infection (High WBC & Neutrophils)', sev: 'severe' }],
         meds: [
-          { name: 'Levothyroxine 50mcg', generic: 'Thyroxine T4', cat: 'Thyroid Hormone Replacement', dosage: '50mcg once daily — empty stomach (30 min before breakfast)', duration: 'Long-term — regular TSH monitoring', conf: 95, note: 'Never skip. Separate from calcium/iron by 4 hrs.', triggered: 'TSH >4.0 μIU/mL' },
+          { name: 'Amoxicillin-Clavulanate 625mg', generic: 'Augmentin', cat: 'Antibiotic', dosage: '625mg twice daily after food', duration: '7 days', conf: 88, note: 'Broad spectrum for bacterial infection.', triggered: 'High WBC & Neutrophils' },
+          { name: 'Paracetamol 650mg', generic: 'Dolo 650', cat: 'Antipyretic', dosage: 'SOS for fever', duration: '5 days', conf: 85, note: 'For fever/pain.', triggered: 'Infection' }
         ]
       },
       {
-        id: 'hyperthyroid', label: 'Hyperthyroidism',
+        id: 'thrombocytopenia_viral', label: 'Viral / Dengue Warning',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'plt', op: '<', val: 150000 }],
+        conditions: [{ name: 'Thrombocytopenia (Low Platelets) - R/O Dengue/Viral', sev: 'severe' }],
+        meds: [
+          { name: 'Carica Papaya Extract', generic: 'Caripill', cat: 'Platelet Booster', dosage: '1 tab thrice daily', duration: '5 days', conf: 82, note: 'Helps increase platelet count.', triggered: 'Low Platelets' },
+          { name: 'Paracetamol 650mg', generic: 'Dolo 650', cat: 'Antipyretic', dosage: 'SOS for fever. STRICT NO NSAIDs (Ibuprofen/Aspirin).', duration: '5 days', conf: 90, note: 'NSAIDs increase bleeding risk in low platelets.', triggered: 'Thrombocytopenia' }
+        ]
+      },
+
+      // 2. Kidney Function (KFT)
+      {
+        id: 'ckd_severe', label: 'Severe Kidney Impairment',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'creatinine', op: '>', val: 2.0 }],
+        conditions: [{ name: 'Severe Renal Impairment / CKD', sev: 'severe' }],
+        meds: [
+          { name: 'Alpha Ketoanalogue', generic: 'Ketosteril / Nephrosave', cat: 'Renal Nutrition', dosage: '1-2 tabs thrice daily with meals', duration: 'Long-term', conf: 88, note: 'Reduces urea burden on kidneys.', triggered: 'High Creatinine > 2.0' },
+          { name: 'Calcitriol 0.25mcg', generic: 'Rocaltrol', cat: 'Active Vitamin D', dosage: '0.25mcg once daily', duration: 'Long-term', conf: 80, note: 'For renal bone disease.', triggered: 'CKD' }
+        ]
+      },
+      {
+        id: 'ckd_mild', label: 'Mild Kidney Impairment',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'creatinine', op: '>', val: 1.2 }, { type: 'lab', key: 'creatinine', op: '<=', val: 2.0 }],
+        conditions: [{ name: 'Mild Renal Impairment (Early CKD/AKI)', sev: 'moderate' }],
+        meds: [
+          { name: 'Taurine + Acetylcysteine', generic: 'Nefrosave', cat: 'Renal Antioxidant', dosage: '1 tab twice daily', duration: '1-3 months', conf: 80, note: 'Protects kidneys from oxidative stress.', triggered: 'Mild High Creatinine' }
+        ]
+      },
+      {
+        id: 'severe_gout', label: 'Severe Gout / Hyperuricemia',
+        triggerMode: 'OR', // single condition so OR/AND doesn't matter much
+        triggers: [{ type: 'lab', key: 'uricacid', op: '>', val: 7.0 }, { type: 'lab', key: 'uricacid_b', op: '>', val: 7.0 }],
+        conditions: [{ name: 'Hyperuricemia (High Uric Acid)', sev: 'moderate' }],
+        meds: [
+          { name: 'Febuxostat 40mg', generic: 'Febutaz', cat: 'Xanthine Oxidase Inhibitor', dosage: '40mg once daily', duration: 'Long-term', conf: 88, note: 'Safer in mild kidney issues than Allopurinol.', triggered: 'High Uric Acid' },
+          { name: 'Colchicine 0.5mg', generic: 'Colchicine', cat: 'Antigout', dosage: '0.5mg twice daily', duration: 'Acute attack only', conf: 85, note: 'Only for acute joint pain flare-ups.', triggered: 'Gout flare' }
+        ]
+      },
+
+      // 3. Thyroid Function (TFT)
+      {
+        id: 'hypothyroid_clinical', label: 'Clinical Hypothyroidism',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'tsh', op: '>', val: 4.0 }, { type: 'lab', key: 't4', op: '<', val: 5.0 }], 
+        conditions: [{ name: 'Clinical Hypothyroidism', sev: 'severe' }],
+        meds: [
+          { name: 'Levothyroxine 50mcg', generic: 'Thyronorm / Eltroxin', cat: 'Thyroid Hormone', dosage: '50mcg empty stomach morning', duration: 'Long-term', conf: 95, note: 'Check TSH every 6 weeks to adjust dose.', triggered: 'High TSH & Low T4' }
+        ]
+      },
+      {
+        id: 'subclinical_hypothyroid', label: 'Subclinical Hypothyroidism',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'tsh', op: '>', val: 4.0 }, { type: 'lab', key: 'tsh', op: '<', val: 10.0 }], 
+        conditions: [{ name: 'Subclinical Hypothyroidism', sev: 'mild' }],
+        meds: [
+          { name: 'Levothyroxine 25mcg', generic: 'Thyronorm', cat: 'Thyroid Hormone', dosage: '25mcg empty stomach morning', duration: 'Long-term', conf: 75, note: 'Only start if symptomatic or pregnant. Otherwise monitor.', triggered: 'Mild High TSH' }
+        ]
+      },
+      {
+        id: 'hyperthyroid_clinical', label: 'Hyperthyroidism',
+        triggerMode: 'AND',
         triggers: [{ type: 'lab', key: 'tsh', op: '<', val: 0.4 }],
-        conditions: [{ name: 'Hyperthyroidism (Low TSH)', sev: 'moderate' }],
+        conditions: [{ name: 'Hyperthyroidism', sev: 'severe' }],
         meds: [
-          { name: 'Carbimazole 10mg', generic: 'Neomercazole', cat: 'Antithyroid', dosage: '10mg thrice daily (reducing dose)', duration: '12-18 months', conf: 88, note: 'Monthly CBC required. Report fever/sore throat.', triggered: 'TSH <0.4' },
-          { name: 'Propranolol 20mg', generic: 'Propranolol', cat: 'Beta Blocker (Symptom Relief)', dosage: '20mg twice daily', duration: 'Until thyroid controlled', conf: 82, note: 'Controls palpitations, tremors, anxiety', triggered: 'Hyperthyroid symptoms' },
+          { name: 'Carbimazole 10mg', generic: 'Neomercazole', cat: 'Antithyroid', dosage: '10mg thrice daily', duration: '12-18 months', conf: 90, note: 'Monthly CBC/LFT monitoring required.', triggered: 'Low TSH' },
+          { name: 'Propranolol 20mg', generic: 'Ciplar', cat: 'Beta Blocker', dosage: '20mg twice daily', duration: 'For symptoms', conf: 85, note: 'Controls tremors and fast heart rate.', triggered: 'Hyperthyroidism symptoms' }
+        ]
+      },
+
+      // 4. Diabetes / Sugar
+      {
+        id: 'diabetes_severe', label: 'Severe Uncontrolled Diabetes',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'hba1c', op: '>', val: 9.0 }, { type: 'lab', key: 'fbs', op: '>', val: 250 }],
+        conditions: [{ name: 'Severe Uncontrolled Diabetes Mellitus', sev: 'severe' }],
+        meds: [
+          { name: 'Insulin Therapy Consult', generic: 'Endocrinologist Referral', cat: 'Insulin', dosage: 'As directed by specialist', duration: 'Immediate', conf: 95, note: 'HbA1c > 9 often requires insulin initiation.', triggered: 'HbA1c > 9.0' },
+          { name: 'Metformin 1000mg', generic: 'Glyciphage SR', cat: 'Antidiabetic', dosage: '1000mg twice daily with meals', duration: 'Long-term', conf: 88, note: 'Max dose metformin if tolerated.', triggered: 'Uncontrolled T2DM' }
         ]
       },
       {
-        id: 'diabetes_hba1c', label: 'Diabetes (HbA1c)',
-        triggers: [{ type: 'lab', key: 'hba1c', op: '>=', val: 6.5 }],
-        conditions: [{ name: 'Diabetes Mellitus Type 2', sev: 'moderate' }],
+        id: 'diabetes_t2', label: 'Type 2 Diabetes',
+        triggerMode: 'OR',
+        triggers: [{ type: 'lab', key: 'hba1c', op: '>=', val: 6.5 }, { type: 'lab', key: 'fbs', op: '>=', val: 126 }],
+        conditions: [{ name: 'Type 2 Diabetes Mellitus', sev: 'moderate' }],
         meds: [
-          { name: 'Metformin XR 500mg', generic: 'Glyciphage SR', cat: 'Biguanide (Antidiabetic)', dosage: '500mg once daily with dinner (increase gradually)', duration: 'Long-term', conf: 95, note: 'Extended release — fewer GI side effects', triggered: 'HbA1c ≥6.5%' },
-          { name: 'Vildagliptin 50mg', generic: 'Jalra / Vildagliptin', cat: 'DPP-4 Inhibitor', dosage: '50mg twice daily', duration: 'Long-term', conf: 83, note: 'Low hypoglycemia risk. Good add-on.', triggered: 'HbA1c elevated' },
+          { name: 'Metformin XR 500mg', generic: 'Glyciphage SR', cat: 'Biguanide', dosage: '500mg once daily with dinner', duration: 'Long-term', conf: 92, note: 'First line therapy.', triggered: 'HbA1c > 6.5 or FBS > 126' },
+          { name: 'Glimepiride 1mg', generic: 'Amaryl', cat: 'Sulfonylurea', dosage: '1mg once daily before breakfast', duration: 'Long-term', conf: 85, note: 'Add-on therapy. Watch for hypoglycemia.', triggered: 'T2DM' }
         ]
       },
       {
-        id: 'pre_diabetes_hba1c', label: 'Pre-Diabetes (HbA1c)',
+        id: 'prediabetes', label: 'Prediabetes',
+        triggerMode: 'AND',
         triggers: [{ type: 'lab', key: 'hba1c', op: '>=', val: 5.7 }, { type: 'lab', key: 'hba1c', op: '<', val: 6.5 }],
-        conditions: [{ name: 'Pre-Diabetes (HbA1c 5.7-6.4%)', sev: 'mild' }],
+        conditions: [{ name: 'Prediabetes (High Risk)', sev: 'mild' }],
         meds: [
-          { name: 'Metformin 250mg', generic: 'Glyciphage', cat: 'Biguanide (Antidiabetic)', dosage: '250mg once daily with dinner', duration: '3-6 months + lifestyle', conf: 78, note: 'Lifestyle changes are primary treatment', triggered: 'HbA1c 5.7-6.4%' },
+          { name: 'Metformin 250mg', generic: 'Glyciphage', cat: 'Biguanide', dosage: '250mg once daily with dinner', duration: '3-6 months', conf: 75, note: 'Along with strict diet and exercise.', triggered: 'Prediabetes' }
+        ]
+      },
+
+      // 5. Lipid Profile
+      {
+        id: 'mixed_dyslipidemia', label: 'Mixed Dyslipidemia',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ldl', op: '>', val: 130 }, { type: 'lab', key: 'trig', op: '>', val: 200 }],
+        conditions: [{ name: 'Mixed Dyslipidemia (High LDL & TG)', sev: 'severe' }],
+        meds: [
+          { name: 'Rosuvastatin 10mg + Fenofibrate 160mg', generic: 'Rozavel F', cat: 'Lipid Lowering Combo', dosage: '1 tab at night', duration: 'Long-term', conf: 90, note: 'Covers both high cholesterol and triglycerides.', triggered: 'High LDL & High TG' }
         ]
       },
       {
-        id: 'high_ldl', label: 'High LDL Cholesterol',
-        triggers: [{ type: 'lab', key: 'ldl', op: '>', val: 100 }],
+        id: 'hypercholesterolemia', label: 'High LDL Cholesterol',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'ldl', op: '>', val: 130 }, { type: 'lab', key: 'trig', op: '<=', val: 200 }],
         conditions: [{ name: 'Hypercholesterolemia (High LDL)', sev: 'moderate' }],
         meds: [
-          { name: 'Atorvastatin 10mg', generic: 'Lipitor / Atorva', cat: 'Statin (Lipid Lowering)', dosage: '10mg once at night', duration: 'Long-term', conf: 93, note: 'Avoid grapefruit. Monitor liver enzymes.', triggered: 'LDL >100 mg/dL' },
-          { name: 'Rosuvastatin 10mg', generic: 'Crestor / Rozavel', cat: 'Statin (Lipid Lowering)', dosage: '10mg once at night', duration: 'Long-term', conf: 90, note: 'More potent than atorvastatin', triggered: 'High LDL (Alt statin)' },
+          { name: 'Rosuvastatin 10mg', generic: 'Crestor / Rozavel', cat: 'Statin', dosage: '10mg once at night', duration: 'Long-term', conf: 92, note: 'Monitor liver enzymes.', triggered: 'High LDL only' }
         ]
       },
       {
-        id: 'high_trig', label: 'High Triglycerides',
-        triggers: [{ type: 'lab', key: 'trig', op: '>', val: 150 }],
+        id: 'hypertriglyceridemia', label: 'High Triglycerides',
+        triggerMode: 'AND',
+        triggers: [{ type: 'lab', key: 'trig', op: '>', val: 200 }, { type: 'lab', key: 'ldl', op: '<=', val: 130 }],
         conditions: [{ name: 'Hypertriglyceridemia', sev: 'moderate' }],
         meds: [
-          { name: 'Omega-3 Ethyl Esters 1000mg', generic: 'Maxepa / Triglide', cat: 'Omega-3 (Triglyceride Lowering)', dosage: '1000mg twice daily with food', duration: '3 months', conf: 82, note: 'Avoid alcohol, fried food, sugar', triggered: 'Triglycerides >150' },
-          { name: 'Fenofibrate 145mg', generic: 'Tricor / Lipidil', cat: 'Fibrate (Lipid Lowering)', dosage: '145mg once daily with food', duration: 'Long-term', conf: 80, note: 'Specifically for very high triglycerides', triggered: 'High TG' },
+          { name: 'Fenofibrate 145mg', generic: 'Tricor', cat: 'Fibrate', dosage: '145mg once daily', duration: 'Long-term', conf: 88, note: 'Strictly avoid alcohol and sugars.', triggered: 'High TG only' },
+          { name: 'Omega-3 Fatty Acids', generic: 'Maxepa', cat: 'Supplement', dosage: '1000mg twice daily', duration: '3 months', conf: 82, note: 'Natural triglyceride lowering.', triggered: 'High TG' }
         ]
       },
+      
       {
         id: 'low_hdl', label: 'Low HDL',
         triggers: [{ type: 'lab', key: 'hdl', op: '<', val: 40 }],
@@ -4768,25 +4861,7 @@
           { name: 'Niacin SR 500mg', generic: 'Niaspan / Nicotinic Acid', cat: 'HDL Booster', dosage: '500mg at night (titrate up)', duration: '3 months', conf: 75, note: 'Flushing is normal side effect — take with food', triggered: 'HDL <40' },
         ]
       },
-      {
-        id: 'uric_acid', label: 'High Uric Acid / Gout',
-        triggers: [{ type: 'lab', key: 'uricacid', op: '>', val: 7 }, { type: 'lab', key: 'uricacid_b', op: '>', val: 7 }],
-        conditions: [{ name: 'Hyperuricemia / Gout', sev: 'moderate' }],
-        meds: [
-          { name: 'Allopurinol 100mg', generic: 'Zyloric', cat: 'Xanthine Oxidase Inhibitor', dosage: '100mg once daily (increase to 300mg gradually)', duration: 'Long-term', conf: 88, note: 'Do NOT start during acute attack. Hydrate well.', triggered: 'Uric acid >7' },
-          { name: 'Febuxostat 40mg', generic: 'Febutaz / Zurig', cat: 'Xanthine Oxidase Inhibitor (2nd gen)', dosage: '40mg once daily', duration: 'Long-term', conf: 85, note: 'Safer in mild kidney impairment than Allopurinol', triggered: 'High uric acid (Alt)' },
-          { name: 'Colchicine 0.5mg', generic: 'Colchicine', cat: 'Antigout (Acute)', dosage: '0.5mg twice daily during attack', duration: 'Acute attack only', conf: 90, note: 'ONLY for acute gout flares — not for maintenance', triggered: 'Acute gout attack' },
-        ]
-      },
-      {
-        id: 'kidney_impair', label: 'Kidney Impairment',
-        triggers: [{ type: 'lab', key: 'creatinine', op: '>', val: 1.5 }, { type: 'lab', key: 'egfr', op: '<', val: 60 }],
-        conditions: [{ name: 'Renal Impairment', sev: 'severe' }],
-        meds: [
-          { name: 'Calcitriol 0.25mcg', generic: 'Rocaltrol', cat: 'Active Vitamin D (Renal)', dosage: '0.25mcg once daily', duration: 'Long-term — nephrology guided', conf: 75, note: 'For renal bone disease', triggered: 'Creatinine >1.5 / eGFR <60' },
-          { name: 'Sevelamer 800mg', generic: 'Renagel', cat: 'Phosphate Binder', dosage: '800mg thrice daily with meals', duration: 'Long-term', conf: 72, note: 'Reduces phosphate in CKD', triggered: 'Kidney impairment' },
-        ]
-      },
+
       // ── ADVANCED LIVER LOGIC ──
       {
         id: 'gilberts_syndrome', label: 'Gilbert\'s Syndrome',
