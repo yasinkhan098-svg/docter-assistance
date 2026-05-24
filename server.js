@@ -8,7 +8,7 @@ const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sqlite3 = require('sqlite3').verbose();
+const { createClient } = require('@libsql/client');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 
@@ -23,40 +23,31 @@ const MONTHLY_PAISE = 99900;   // Rs 999
 const YEARLY_PAISE = 799900;  // Rs 7999
 
 // ── DATABASE ──────────────────────────────────────────────────
-const dbPath = process.env.DB_PATH || './doctors.db';
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) console.error('❌ Database error:', err.message);
-  else console.log('✅ Database connected');
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL || 'file:./doctors.db',
+  authToken: process.env.TURSO_AUTH_TOKEN
 });
+console.log('✅ Connected to Turso/SQLite database');
 
 // Helper for async queries
-const dbRun = (sql, params = []) => new Promise((resolve, reject) => {
-  db.run(sql, params, function (err) {
-    if (err) reject(err);
-    else resolve(this);
-  });
-});
+const dbRun = async (sql, params = []) => {
+  const res = await db.execute({ sql, args: params });
+  return { lastID: res.lastInsertRowid ? Number(res.lastInsertRowid) : undefined, changes: res.rowsAffected };
+};
 
-const dbGet = (sql, params = []) => new Promise((resolve, reject) => {
-  db.get(sql, params, (err, row) => {
-    if (err) reject(err);
-    else resolve(row);
-  });
-});
+const dbGet = async (sql, params = []) => {
+  const res = await db.execute({ sql, args: params });
+  return res.rows[0];
+};
 
-const dbAll = (sql, params = []) => new Promise((resolve, reject) => {
-  db.all(sql, params, (err, rows) => {
-    if (err) reject(err);
-    else resolve(rows || []);
-  });
-});
+const dbAll = async (sql, params = []) => {
+  const res = await db.execute({ sql, args: params });
+  return res.rows;
+};
 
-const dbExec = (sql) => new Promise((resolve, reject) => {
-  db.exec(sql, (err) => {
-    if (err) reject(err);
-    else resolve();
-  });
-});
+const dbExec = async (sql) => {
+  await db.executeMultiple(sql);
+};
 
 dbExec(`
   CREATE TABLE IF NOT EXISTS doctors (
@@ -447,3 +438,4 @@ app.listen(PORT, () => {
 // Restarted server for .env updates
 // Restarted again for latest key update
 // Restarted for Groq key
+module.exports = app;
