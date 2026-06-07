@@ -611,17 +611,325 @@
       color: #fde68a;
     }
 
-    @media(max-width:480px) {
-      .form-row.cols-2 {
-        grid-template-columns: 1fr;
+    /* ══════════════════════════════════════════════════
+       AUTH PAGE — FULLY RESPONSIVE
+       Tablet (≤768px) · Mobile (≤540px) · Small (≤380px)
+       ══════════════════════════════════════════════════ */
+
+    /* ── TABLET (≤768px) ── */
+    @media (max-width: 768px) {
+      /* Background stays fully fixed and covered — no change needed */
+      
+      .page-wrap {
+        padding: 20px 20px;
+        justify-content: center;
       }
 
+      .auth-logo {
+        margin-bottom: 24px;
+      }
+
+      .auth-logo-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 26px;
+        border-radius: 14px;
+      }
+
+      .auth-logo-name {
+        font-size: 22px;
+      }
+
+      .auth-card {
+        max-width: 100%;
+        border-radius: 22px;
+      }
+
+      .auth-body {
+        padding: 24px 22px;
+      }
+
+      .auth-tab {
+        font-size: 13px;
+        padding: 15px 10px;
+      }
+
+      /* Keep 2-column form rows on tablet */
+      .form-row.cols-2 {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* Plan grid stays 2-column on tablet */
       .plan-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+
+      input, select, textarea {
+        font-size: 14px;
+        padding: 13px 16px;
+        border-radius: 12px;
+      }
+
+      .btn-primary {
+        font-size: 15px;
+        padding: 14px;
+        border-radius: 14px;
+      }
+
+      .plan-card {
+        padding: 14px 10px;
+      }
+
+      .plan-price {
+        font-size: 14px;
+      }
+
+      .plan-name {
+        font-size: 10px;
+      }
+    }
+
+    /* ── MOBILE (≤540px) ── */
+    @media (max-width: 540px) {
+      .page-wrap {
+        padding: 16px 12px;
+        min-height: 100dvh;
+        justify-content: flex-start;
+        padding-top: clamp(16px, 5vh, 40px);
+      }
+
+      .auth-logo {
+        margin-bottom: 18px;
+      }
+
+      .auth-logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+      }
+
+      .auth-logo-name {
+        font-size: 20px;
+      }
+
+      .auth-logo-sub {
+        font-size: 8px;
+        letter-spacing: 2px;
+      }
+
+      .auth-card {
+        max-width: 100%;
+        border-radius: 20px;
+        /* Enhanced glassmorphism on mobile — more contrast needed */
+        background: rgba(4, 20, 28, 0.58);
+        backdrop-filter: blur(36px) saturate(200%);
+        -webkit-backdrop-filter: blur(36px) saturate(200%);
+        border: 1px solid rgba(0, 245, 196, 0.3);
+        box-shadow:
+          0 0 0 1px rgba(0, 245, 196, 0.1),
+          0 8px 24px rgba(0, 0, 0, 0.6),
+          0 0 40px rgba(0, 245, 196, 0.1);
+      }
+
+      .auth-tab {
+        font-size: 12px;
+        padding: 14px 8px;
+        letter-spacing: 0.2px;
       }
 
       .auth-body {
         padding: 20px 16px;
+      }
+
+      /* Stack 2-col form rows to 1 col on mobile */
+      .form-row.cols-2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      /* Plan grid: 2 per row on mobile (not all 3 squished) */
+      .plan-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .plan-card {
+        padding: 12px 8px;
+        border-radius: 12px;
+      }
+
+      .plan-icon {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+
+      .plan-name {
+        font-size: 9px;
+      }
+
+      .plan-price {
+        font-size: 13px;
+      }
+
+      .plan-period {
+        font-size: 8px;
+      }
+
+      .plan-feature {
+        font-size: 8px;
+      }
+
+      .plan-badge {
+        font-size: 7px;
+        padding: 3px 24px;
+        right: -22px;
+      }
+
+      input, select, textarea {
+        font-size: 15px;
+        padding: 13px 14px;
+        border-radius: 12px;
+      }
+
+      .fgroup label {
+        font-size: 10px;
+        letter-spacing: 1px;
+      }
+
+      .btn-primary {
+        font-size: 14px;
+        padding: 13px;
+        border-radius: 13px;
+        letter-spacing: 0.5px;
+      }
+
+      .btn-secondary {
+        font-size: 12px;
+        padding: 10px;
+        margin-top: 6px;
+      }
+
+      .trial-badge {
+        font-size: 10px;
+        padding: 7px 10px;
+      }
+
+      .info-chips {
+        gap: 4px;
+      }
+
+      .chip {
+        font-size: 8px;
+        padding: 3px 8px;
+      }
+
+      /* Payment panel */
+      #paymentPanel {
+        padding: 16px 14px;
+      }
+
+      .pay-title {
+        font-size: 16px;
+      }
+
+      .pay-amount {
+        font-size: 24px;
+      }
+
+      .pay-features li {
+        font-size: 11px;
+      }
+
+      /* Alert boxes */
+      .alert {
+        font-size: 11px;
+        padding: 10px 12px;
+      }
+
+      /* Welcome overlay */
+      .welcome-content {
+        padding: 32px 24px;
+        border-radius: 24px;
+        margin: 0 16px;
+      }
+
+      .welcome-icon {
+        font-size: 60px;
+        margin-bottom: 16px;
+      }
+
+      .welcome-title {
+        font-size: 28px;
+      }
+
+      .welcome-text {
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+
+      .welcome-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+      }
+
+      /* Divider */
+      .divider {
+        margin: 14px 0;
+      }
+
+      .divider span {
+        font-size: 9px;
+      }
+    }
+
+    /* ── SMALL MOBILE (≤380px) ── */
+    @media (max-width: 380px) {
+      .page-wrap {
+        padding: 10px 10px;
+      }
+
+      .auth-logo-name {
+        font-size: 18px;
+      }
+
+      .auth-logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+      }
+
+      .auth-tab {
+        font-size: 11px;
+        padding: 12px 6px;
+      }
+
+      .auth-body {
+        padding: 16px 12px;
+      }
+
+      /* Plan grid: 2 per row even on very small */
+      .plan-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .plan-card {
+        padding: 10px 6px;
+      }
+
+      input, select, textarea {
+        font-size: 14px;
+        padding: 11px 12px;
+      }
+
+      .btn-primary {
+        font-size: 13px;
+        padding: 12px;
       }
     }
 
