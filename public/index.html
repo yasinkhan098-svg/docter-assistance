@@ -8233,7 +8233,8 @@
       { id: 'hair_skin', icon: '💇', label: 'Baal / Nakhun' },
       { id: 'women_sym', icon: '🌸', label: 'Mahila Samasya' },
       { id: 'men_sym', icon: '👨', label: 'Purush Samasya' },
-      { id: 'senior_sym', icon: '👴', label: 'Buzurg Takliifein' },];
+      { id: 'senior_sym', icon: '👴', label: 'Buzurg Takliifein' },
+      { id: 'throat_ear_inf', icon: '🦠', label: 'गले/कान का संक्रमण व सूजन' },];
 
     // Each symptom: {id, name, sub, keywords[]}
     const SYM_OPTIONS = {
@@ -8374,6 +8375,18 @@
           { id: 'hearing_loss', name: 'Sunai Kam Dena', sub: 'Ek ya dono kaano se' },
           { id: 'ear_block', name: 'Kaan Band Rehna', sub: 'Pressure jaisa feeling' },
           { id: 'tinnitus', name: 'Kaan mein Seeti / Awaz', sub: 'Ghinn ghinn ki awaaz' },
+        ]
+      },
+      // ── THROAT / EAR INFECTION (GALE / KAAN KA SANKRAMAN) ───────────
+      throat_ear_inf: {
+        title: '🦠 गले/कान के संक्रमण और सूजन व दर्द',
+        symptoms: [
+          { id: 'tei_throat_bact', name: 'गले का बैक्टीरियल संक्रमण (Bacterial Throat)', sub: 'Gale mein tez dard, bukhaar, sujan' },
+          { id: 'tei_ear_inf', name: 'कान का संक्रमण / Otitis Media', sub: 'Kaan mein dard, sujan, pus' },
+          { id: 'tei_sinus_inf', name: 'साइनस संक्रमण (Sinusitis)', sub: 'Naak band, mathe mein pressure, bukhaar' },
+          { id: 'tei_throat_swollen', name: 'गले में सूजन व दर्द (Throat Swelling)', sub: 'Nigalne mein takliif, sujan' },
+          { id: 'tei_gas_discomfort', name: 'पेट में गैस / पेट फूलना (Gas with Infection)', sub: 'Sankraman ke dauran gas ya pet phoolna' },
+          { id: 'tei_throat_ear_both', name: 'गले + कान दोनों में दर्द (Combined)', sub: 'Dono mein ek saath takliif' },
         ]
       },
       urine_sym: {
@@ -8964,6 +8977,129 @@
           '0-1': [{ name: 'Paracetamol Drops 15mg/kg', generic: 'Calpol Drops', cat: 'Analgesic (Infant)', dosage: '15mg/kg every 6 hrs', duration: '3 days', conf: 90, note: 'NO ear drops in infants without doctor', triggered: 'Infant ear pain' }],
           '1-6': [{ name: 'Amoxicillin 40mg/kg/day Susp + Paracetamol', generic: 'Mox + Calpol', cat: 'Antibiotic + Analgesic', dosage: '40mg/kg/day in 3 doses + paracetamol', duration: '7-10 days', conf: 88, note: 'AOM (middle ear infection) treatment', triggered: 'Child earache 1-6yr' }],
           '6-12': [{ name: 'Amoxicillin 250mg + Ciprofloxacin Ear Drops', generic: 'Novamox + Ciplox-HC', cat: 'Antibiotic (Oral + Topical Ear)', dosage: '250mg 3x/day + 3 drops 3x/day', duration: '7 days', conf: 89, note: 'Combined oral + ear drop treatment', triggered: 'Child ear infection 6-12yr' }],
+        }
+      },
+      // ── THROAT / EAR INFECTION MEDICINES ─────────────────────
+      tei_throat_bact: {
+        adult: [
+          { name: 'Clarithromycin 250mg', generic: 'Claribid / Clarimac 250', cat: 'Antibiotic (Macrolide)', dosage: '250mg twice daily after food', duration: '7-10 din (poori avadhi lein)', conf: 95, note: 'यह एक एंटीबायोटिक है। गले, कान, साइनस या श्वसन तंत्र के बैक्टीरियल संक्रमण में दी जाती है। डॉक्टर द्वारा बताई गई पूरी अवधि तक लेना चाहिए, भले ही आराम मिल जाए।', triggered: 'Gale ka bacterial sankraman' },
+          { name: 'Deflazacort 6mg', generic: 'Deflomat 6 / Decortil', cat: 'Corticosteroid (Swelling)', dosage: '6mg once daily morning (khane ke saath)', duration: '3-5 din (doctor advice ke anusar)', conf: 91, note: 'यह एक स्टेरॉयड दवा है। सूजन और इंफ्लेमेशन कम करती है, जिससे गले या कान की सूजन में जल्दी आराम मिल सकता है। इसे डॉक्टर की सलाह के बिना लंबे समय तक नहीं लेना चाहिए।', triggered: 'Gale/kaan ki sujan' },
+          { name: 'Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg', generic: 'Fensu-SP 15 / Zerodol-SP', cat: 'NSAID + Analgesic + Anti-inflammatory Enzyme', dosage: '1 tablet twice daily after food', duration: '5-7 din', conf: 93, note: 'दर्द, बुखार और सूजन कम करने के लिए। गले के दर्द, कान के दर्द और सूजन में राहत देती है।', triggered: 'Gale/kaan ka dard aur sujan' },
+          { name: 'Simethicone 140mg', generic: 'Metagas 140 / Gas-X', cat: 'Antiflatulent (Gas Relief)', dosage: '1 capsule after meals (3 times daily)', duration: 'Jab tak zaroorat ho', conf: 88, note: 'पेट में गैस, पेट फूलना और डकार जैसी समस्याओं से राहत के लिए। संक्रमण की दवा नहीं है, केवल गैस के लक्षण कम करती है।', triggered: 'Antibiotic ke saath gas/pet phoolna' },
+          { name: 'Azithromycin 500mg', generic: 'Zithromax / Azee 500', cat: 'Antibiotic (Macrolide — Alternative)', dosage: '500mg once daily', duration: '5 din', conf: 89, note: 'Clarithromycin se allergy ho to alternative. Broad-spectrum macrolide antibiotic.', triggered: 'Bacterial throat infection (alternative)' },
+          { name: 'Amoxicillin-Clavulanate 625mg', generic: 'Augmentin 625', cat: 'Antibiotic (Penicillin + Beta-Lactamase Inhibitor)', dosage: '625mg twice daily after food', duration: '7-10 din', conf: 90, note: 'Resistant bacterial infections ke liye. Severe throat ya sinus infection mein.', triggered: 'Resistant throat/sinus infection' },
+          { name: 'Levofloxacin 500mg', generic: 'Levaquin / Levoflox', cat: 'Antibiotic (Fluoroquinolone)', dosage: '500mg once daily', duration: '5-7 din', conf: 86, note: 'Second-line antibiotic. Severe ya resistant infection mein doctor द्वारा prescribe.', triggered: 'Severe sinus/throat infection' },
+          { name: 'Ibuprofen 400mg', generic: 'Brufen / Combiflam', cat: 'NSAID (Alternate Pain Relief)', dosage: '400mg thrice daily after food', duration: '3-5 din', conf: 85, note: 'Gale ke dard aur bukhaar ke liye. Khane ke saath lena zaroori.', triggered: 'Throat pain fever relief' },
+        ],
+        child: {
+          '0-1': [{ name: 'Paracetamol Drops 15mg/kg', generic: 'Calpol Drops', cat: 'Analgesic (Infant)', dosage: '15mg/kg every 6 hrs', duration: '3 din', conf: 92, note: 'Infant mein antibiotic sirf doctor ke baad dein. Paracetamol safely dein.', triggered: 'Infant throat/ear infection' }],
+          '1-3': [{ name: 'Amoxicillin 40mg/kg/day Suspension', generic: 'Mox Suspension', cat: 'Antibiotic (Paediatric)', dosage: '40mg/kg/day in 3 divided doses', duration: '7-10 din', conf: 90, note: 'Bacterial throat/ear infection in toddlers. Doctor confirmation required.', triggered: 'Toddler throat infection' }],
+          '3-6': [
+            { name: 'Clarithromycin 125mg/5ml Suspension', generic: 'Claribid Susp', cat: 'Antibiotic (Macrolide, Paediatric)', dosage: '7.5mg/kg twice daily', duration: '7-10 din', conf: 91, note: 'Bacterial throat ya ear infection mein. Poora course complete karein.', triggered: 'Child throat infection 3-6yr' },
+            { name: 'Paracetamol 125mg + Ibuprofen 100mg (alternating)', generic: 'Calpol + Brufen Syrup', cat: 'Analgesic + Anti-inflammatory', dosage: 'Paracetamol 125mg every 6 hrs; Ibuprofen 100mg every 8 hrs (alternate)', duration: '3-5 din', conf: 90, note: 'Dard aur bukhaar ke liye effective combination', triggered: 'Child throat/ear pain' }
+          ],
+          '6-12': [
+            { name: 'Clarithromycin 250mg Tablet/Suspension', generic: 'Claribid 250', cat: 'Antibiotic (Macrolide)', dosage: '250mg twice daily after food', duration: '7-10 din', conf: 92, note: 'Bacterial throat, ear, sinus infection mein. Full course complete karein.', triggered: 'Child 6-12yr throat infection' },
+            { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid (Swelling)', dosage: '6mg once daily (doctor advice ke anusar)', duration: '3-5 din', conf: 88, note: 'Severe sujan ke liye. Doctor prescription required.', triggered: 'Child throat swelling' },
+            { name: 'Aceclofenac 50mg + Paracetamol 125mg + Serratiopeptidase 10mg', generic: 'Fensu-SP (Paediatric)', cat: 'Anti-inflammatory Combo', dosage: 'Doctor ke anusar (usually half adult dose)', duration: '3-5 din', conf: 87, note: 'Dard aur sujan mein. Doctor ki salah se dein.', triggered: 'Child throat ear pain swelling' }
+          ],
+        }
+      },
+      tei_ear_inf: {
+        adult: [
+          { name: 'Clarithromycin 250mg', generic: 'Claribid / Clarimac 250', cat: 'Antibiotic (Macrolide)', dosage: '250mg twice daily after food', duration: '7-10 din', conf: 95, note: 'यह एक एंटीबायोटिक है। कान के बैक्टीरियल संक्रमण में दी जाती है। डॉक्टर द्वारा बताई गई पूरी अवधि तक लेना चाहिए।', triggered: 'Kaan ka bacterial infection' },
+          { name: 'Deflazacort 6mg', generic: 'Deflomat 6 / Decortil', cat: 'Corticosteroid (Swelling)', dosage: '6mg once daily morning', duration: '3-5 din', conf: 90, note: 'यह एक स्टेरॉयड दवा है। कान की सूजन में जल्दी आराम देती है। लंबे समय तक न लें।', triggered: 'Kaan ki sujan' },
+          { name: 'Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg', generic: 'Fensu-SP 15', cat: 'NSAID + Analgesic + Enzyme', dosage: '1 tablet twice daily after food', duration: '5-7 din', conf: 92, note: 'दर्द, बुखार और सूजन कम करने के लिए। कान के दर्द और सूजन में राहत देती है।', triggered: 'Kaan ka dard aur sujan' },
+          { name: 'Simethicone 140mg', generic: 'Metagas 140', cat: 'Antiflatulent', dosage: '1 capsule after meals', duration: 'As needed', conf: 85, note: 'Antibiotic ke saath gas ki problem hone par. Keval gas ke symptoms ke liye.', triggered: 'Gas with ear infection treatment' },
+          { name: 'Ciprofloxacin + Dexamethasone Ear Drops', generic: 'Ciplox-D Ear Drops / Sofradex', cat: 'Antibiotic + Steroid Ear Drops', dosage: '3-4 drops 3x/day in affected ear', duration: '7 din', conf: 91, note: 'Kaan mein directly dalne ke liye. Daalne se pehle warm karein. 2 minute side mein leten rahein.', triggered: 'Ear infection drops' },
+          { name: 'Amoxicillin-Clavulanate 625mg', generic: 'Augmentin 625', cat: 'Antibiotic (Alternative)', dosage: '625mg twice daily after food', duration: '7-10 din', conf: 89, note: 'Acute Otitis Media mein alternative antibiotic choice.', triggered: 'Ear infection antibiotic alternative' },
+          { name: 'Ofloxacin 0.3% Ear Drops', generic: 'Ocuflox Otic / Zanocin Ear', cat: 'Antibiotic Ear Drops (Fluoroquinolone)', dosage: '5-10 drops 2x/day', duration: '7 din', conf: 88, note: 'Outer ear infection (otitis externa) ke liye best.', triggered: 'Outer ear infection drops' },
+          { name: 'Betamethasone + Gentamicin Ear Drops', generic: 'Garasone Ear Drops', cat: 'Steroid + Antibiotic Ear Drops', dosage: '3-4 drops 3x/day', duration: '5-7 din', conf: 86, note: 'Sujan aur infection dono ke liye ear drops.', triggered: 'Ear swelling + infection' },
+        ],
+        child: {
+          '0-1': [{ name: 'Paracetamol Drops 15mg/kg + Doctor Referral', generic: 'Calpol Drops', cat: 'Analgesic (Infant)', dosage: '15mg/kg every 6 hrs', duration: '3 din', conf: 92, note: 'Infant ear infection mein TURANT DOCTOR se milein. Ear drops use na karein bina doctor ke.', triggered: 'Infant ear infection' }],
+          '1-6': [{ name: 'Amoxicillin 40mg/kg/day Susp + Paracetamol', generic: 'Mox + Calpol', cat: 'Antibiotic + Analgesic (Paediatric)', dosage: '40mg/kg/day in 3 doses', duration: '7-10 din', conf: 90, note: 'AOM (Acute Otitis Media) standard treatment. Doctor supervision.', triggered: 'Child ear infection 1-6yr' }],
+          '6-12': [
+            { name: 'Clarithromycin 125mg/5ml Suspension', generic: 'Claribid Susp', cat: 'Antibiotic (Macrolide)', dosage: '7.5mg/kg twice daily', duration: '7-10 din', conf: 91, note: 'Amoxicillin allergy ho ya macrolide preferred ho tab. Full course.', triggered: 'Child ear infection macrolide' },
+            { name: 'Ofloxacin 0.3% Ear Drops (Paediatric use)', generic: 'Zanocin Otic', cat: 'Antibiotic Ear Drops', dosage: '5 drops 2x/day (doctor confirmation required)', duration: '7 din', conf: 87, note: 'Outer ear infection mein. Doctor approval zaroori.', triggered: 'Child ear drops' }
+          ],
+        }
+      },
+      tei_sinus_inf: {
+        adult: [
+          { name: 'Clarithromycin 250mg', generic: 'Claribid 250', cat: 'Antibiotic (Macrolide)', dosage: '250mg twice daily after food', duration: '7-14 din', conf: 94, note: 'Bacterial sinusitis ke liye best macrolide antibiotic. Puri avadhi lein.', triggered: 'Bacterial sinusitis' },
+          { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid (Anti-Swelling)', dosage: '6mg once daily in morning', duration: '5 din', conf: 90, note: 'Sinus ki sujan mein jaldi aaraam. Short course.', triggered: 'Sinus swelling' },
+          { name: 'Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg', generic: 'Fensu-SP 15', cat: 'NSAID + Enzyme Anti-inflammatory', dosage: '1 tablet twice daily after food', duration: '5-7 din', conf: 92, note: 'Sinus dard aur sujan mein effective. Khane ke baad lein.', triggered: 'Sinus pain inflammation' },
+          { name: 'Simethicone 140mg', generic: 'Metagas 140', cat: 'Antiflatulent', dosage: '1 capsule after meals (3x/day)', duration: 'As needed', conf: 84, note: 'Antibiotic course ke dauran gas ki problem ke liye.', triggered: 'Gas during sinusitis treatment' },
+          { name: 'Mometasone Nasal Spray 50mcg', generic: 'Nasonex / Momecon Nasal', cat: 'Intranasal Corticosteroid', dosage: '2 sprays each nostril once daily', duration: '2-4 hafte', conf: 91, note: 'Nasal cavity ki sujan khatam karta hai. Best for chronic sinusitis.', triggered: 'Nasal congestion sinusitis' },
+          { name: 'Xylometazoline 0.1% Nasal Spray', generic: 'Otrivin Adult', cat: 'Nasal Decongestant', dosage: '2 sprays each nostril 3x/day', duration: 'Max 3 din', conf: 82, note: 'Naak kholi karega. Sirf 3 din — rebound congestion ka risk.', triggered: 'Sinus nasal blockage' },
+          { name: 'Amoxicillin-Clavulanate 875mg', generic: 'Augmentin 875', cat: 'Antibiotic (Beta-Lactam Combo)', dosage: '875mg twice daily after food', duration: '10-14 din', conf: 89, note: 'Severe ya resistant sinusitis ke liye. Doctor se lein.', triggered: 'Severe sinusitis antibiotic' },
+        ],
+        child: {
+          '3-6': [{ name: 'Amoxicillin 40mg/kg/day Suspension', generic: 'Mox Susp', cat: 'Antibiotic (Paediatric)', dosage: '40mg/kg/day in 3 doses', duration: '10 din', conf: 89, note: 'Child sinusitis mein first-line treatment.', triggered: 'Child sinusitis 3-6yr' }],
+          '6-12': [
+            { name: 'Clarithromycin 125mg/5ml Susp', generic: 'Claribid Susp', cat: 'Antibiotic (Macrolide)', dosage: '7.5mg/kg twice daily', duration: '7-10 din', conf: 91, note: 'Sinusitis mein macrolide choice.', triggered: 'Child sinusitis 6-12yr' },
+            { name: 'Mometasone Nasal Spray (Paediatric)', generic: 'Nasonex Paed', cat: 'Nasal Steroid', dosage: '1 spray each nostril daily', duration: '2-4 hafte', conf: 88, note: 'Child sinus swelling ke liye safe.', triggered: 'Child nasal sinus' }
+          ],
+        }
+      },
+      tei_throat_swollen: {
+        adult: [
+          { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid (Primary — Swelling)', dosage: '6mg once daily morning (khane ke saath)', duration: '3-5 din', conf: 95, note: 'यह एक स्टेरॉयड दवा है। सूजन और इंफ्लेमेशन कम करती है, जिससे गले की सूजन में जल्दी आराम मिल सकता है।', triggered: 'Gale ki sujan' },
+          { name: 'Clarithromycin 250mg', generic: 'Claribid 250', cat: 'Antibiotic (If bacterial)', dosage: '250mg twice daily after food', duration: '7-10 din', conf: 92, note: 'Agar sujan bacterial infection ki wajah se hai to. Doctor confirm karein.', triggered: 'Throat swelling due to infection' },
+          { name: 'Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg', generic: 'Fensu-SP 15', cat: 'NSAID + Enzyme (Swelling + Pain)', dosage: '1 tablet twice daily after food', duration: '5-7 din', conf: 93, note: 'दर्द, बुखार और सूजन कम करने के लिए। गले के दर्द और सूजन में राहत देती है।', triggered: 'Throat pain and swelling' },
+          { name: 'Simethicone 140mg', generic: 'Metagas 140', cat: 'Antiflatulent (Supportive)', dosage: '1 capsule after meals (3x/day)', duration: 'As needed', conf: 85, note: 'Dawa lene ke saath gas ya pet phoolne ki takliif mein.', triggered: 'Gas relief during throat treatment' },
+          { name: 'Benzydamine 0.15% Gargle', generic: 'Tantum Verde Gargle', cat: 'Anti-inflammatory Gargle (Topical)', dosage: '15ml undiluted gargle every 3 hrs — gargle aur thookein', duration: '5-7 din', conf: 90, note: 'Topical anti-inflammatory. Throat pain mein immediate relief. Nikalna zaroori.', triggered: 'Throat gargle for pain' },
+          { name: 'Prednisolone 20mg', generic: 'Omnacortil 20', cat: 'Corticosteroid (Severe Swelling — Alternative)', dosage: '20mg once daily morning for 3-5 days', duration: '3-5 din', conf: 87, note: 'Severe throat swelling mein. Doctor prescription zaroori.', triggered: 'Severe throat swelling steroid' },
+          { name: 'Dexamethasone 4mg', generic: 'Dexona 4mg', cat: 'Corticosteroid (Potent — Hospital)', dosage: '4mg once daily (doctor guided)', duration: '3 din', conf: 85, note: 'Very severe sujan mein. Hospital setting mein use.', triggered: 'Severe throat inflammation hospital' },
+        ],
+        child: {
+          '3-6': [
+            { name: 'Paracetamol 125mg Syrup', generic: 'Calpol Syrup', cat: 'Analgesic + Antipyretic', dosage: '125mg every 6 hrs', duration: '3-5 din', conf: 91, note: 'Dard aur bukhaar ke liye safe choice.', triggered: 'Child throat pain 3-6yr' },
+            { name: 'Amoxicillin 40mg/kg Suspension (if bacterial)', generic: 'Mox Susp', cat: 'Antibiotic (Paediatric)', dosage: '40mg/kg/day in 3 doses', duration: '7-10 din', conf: 89, note: 'Bacterial throat swelling ke liye.', triggered: 'Child throat infection swelling' }
+          ],
+          '6-12': [
+            { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid (Paediatric Swelling)', dosage: '6mg once daily (doctor advice)', duration: '3-5 din', conf: 89, note: 'Severe sujan mein doctor ke baad dein.', triggered: 'Child throat swelling steroid' },
+            { name: 'Clarithromycin Suspension 7.5mg/kg', generic: 'Claribid Susp', cat: 'Antibiotic (Macrolide)', dosage: '7.5mg/kg twice daily', duration: '7-10 din', conf: 91, note: 'Bacterial throat infection. Full course.', triggered: 'Child bacterial throat' }
+          ],
+        }
+      },
+      tei_gas_discomfort: {
+        adult: [
+          { name: 'Simethicone 140mg', generic: 'Metagas 140 / Gas-X Extra Strength', cat: 'Antiflatulent (Primary)', dosage: '1 capsule after each meal and at bedtime', duration: 'Jab tak zaroorat ho', conf: 96, note: 'पेट में गैस, पेट फूलना और डकार जैसी समस्याओं से राहत के लिए। संक्रमण की दवा नहीं है, केवल गैस के लक्षण कम करती है।', triggered: 'Pet mein gas, pet phoolna, dakar' },
+          { name: 'Domperidone 10mg + Simethicone', generic: 'Domstal-S / Rantac DSR', cat: 'Prokinetic + Antiflatulent Combo', dosage: '1 tablet before meals (3x/day)', duration: '5-7 din', conf: 88, note: 'Gas ke saath bloating aur digestion problem mein. Khane se 30 min pehle lein.', triggered: 'Gas + bloating + digestion' },
+          { name: 'Pantoprazole 40mg', generic: 'Pan-40 / Pantocid', cat: 'Proton Pump Inhibitor', dosage: '40mg once daily empty stomach (morning)', duration: '7-14 din', conf: 87, note: 'Antibiotic ke saath acidity ya jalan ho to. Subah khane se 30 min pehle.', triggered: 'Acidity with antibiotic treatment' },
+          { name: 'Activated Charcoal 250mg + Simethicone', generic: 'Carbo-Sim / Flatuna', cat: 'Antiflatulent + Adsorbent', dosage: '2 capsules after meals', duration: '3-5 din', conf: 82, note: 'Severe gas aur bloating mein. Other medicines se 2 hrs door rakhein.', triggered: 'Severe gas with bloating' },
+          { name: 'Dill Water (Saunf ka Pani — Natural)', generic: 'Gripe Water / Saunf Ark', cat: 'Natural Carminative', dosage: '2-3 tbsp after meals', duration: 'As needed', conf: 80, note: 'Natural gas relief. Safe for mild cases. No side effects.', triggered: 'Mild gas natural remedy' },
+        ],
+        child: {
+          '0-1': [{ name: 'Simethicone Infant Drops 40mg/0.6ml', generic: 'Infacol / Gas-X Infant', cat: 'Antiflatulent (Infant)', dosage: '0.3ml before each feeding', duration: 'As needed', conf: 90, note: 'Infant mein gas ke liye safe. Har feeding se pehle dein.', triggered: 'Infant gas colic' }],
+          '1-3': [{ name: 'Simethicone 40mg Drops', generic: 'Infacol', cat: 'Antiflatulent (Toddler)', dosage: '0.6ml (40mg) 3x/day', duration: 'As needed', conf: 89, note: 'Toddler mein gas se aaraam ke liye.', triggered: 'Toddler gas discomfort' }],
+          '3-6': [{ name: 'Simethicone 80mg Chewable', generic: 'Gas-X Paediatric', cat: 'Antiflatulent', dosage: '80mg 3x/day after meals', duration: 'As needed', conf: 88, note: 'Khane ke baad dein. Safe and effective.', triggered: 'Child gas discomfort' }],
+          '6-12': [{ name: 'Simethicone 125mg + Activated Charcoal', generic: 'Flatuna Paed', cat: 'Antiflatulent (Older Child)', dosage: '125mg after meals (3x/day)', duration: 'As needed', conf: 87, note: 'School age child mein gas aur bloating ke liye.', triggered: 'Child 6-12 gas' }],
+        }
+      },
+      tei_throat_ear_both: {
+        adult: [
+          { name: 'Clarithromycin 250mg', generic: 'Claribid 250', cat: 'Antibiotic (Macrolide — Primary)', dosage: '250mg twice daily after food', duration: '7-10 din', conf: 95, note: 'यह एक एंटीबायोटिक है। गले + कान दोनों के बैक्टीरियल संक्रमण में दी जाती है। पूरी अवधि तक लेना जरूरी है।', triggered: 'Gale + kaan dono ka infection' },
+          { name: 'Simethicone 140mg', generic: 'Metagas 140', cat: 'Antiflatulent (Gas Relief)', dosage: '1 capsule after each meal', duration: 'Jab tak zaroorat ho', conf: 88, note: 'पेट में गैस, पेट फूलना और डकार जैसी समस्याओं से राहत के लिए। संक्रमण की दवा नहीं है।', triggered: 'Gas during combined throat-ear treatment' },
+          { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid (Swelling)', dosage: '6mg once daily morning', duration: '3-5 din', conf: 92, note: 'यह एक स्टेरॉयड दवा है। दोनों जगह की सूजन को एक साथ कम करती है।', triggered: 'Combined throat ear swelling' },
+          { name: 'Aceclofenac 100mg + Paracetamol 325mg + Serratiopeptidase 15mg', generic: 'Fensu-SP 15', cat: 'NSAID + Enzyme (Combined Pain)', dosage: '1 tablet twice daily after food', duration: '5-7 din', conf: 93, note: 'दर्द, बुखार और सूजन कम करने के लिए। गले के दर्द, कान के दर्द और सूजन में राहत देती है।', triggered: 'Combined throat ear pain' },
+          { name: 'Ciprofloxacin + Dexamethasone Ear Drops', generic: 'Ciplox-D Ear / Sofradex', cat: 'Topical Antibiotic + Steroid Ear', dosage: '3-4 drops 3x/day in affected ear', duration: '7 din', conf: 90, note: 'Kaan mein directly daalne ke liye. Oral antibiotic ke saath use.', triggered: 'Ear drops with systemic treatment' },
+          { name: 'Benzydamine 0.15% Gargle', generic: 'Tantum Verde Gargle', cat: 'Anti-inflammatory Gargle', dosage: '15ml every 3-4 hrs — gargle aur thookein', duration: '5-7 din', conf: 88, note: 'Gale ki pain ke liye topical relief. Ear drops ke saath acha combination.', triggered: 'Throat gargle combined treatment' },
+          { name: 'Azithromycin 500mg', generic: 'Azee 500 / Zithromax', cat: 'Antibiotic (Alternative)', dosage: '500mg once daily', duration: '5 din', conf: 88, note: 'Clarithromycin se allergy ho to alternative. Once daily convenience.', triggered: 'Alternative combined throat ear antibiotic' },
+        ],
+        child: {
+          '1-3': [{ name: 'Amoxicillin-Clavulanate 200mg/5ml Susp', generic: 'Augmentin Junior', cat: 'Antibiotic (Paediatric Combo)', dosage: '25mg/kg twice daily', duration: '7-10 din', conf: 90, note: 'Both throat and ear infection. Doctor supervision.', triggered: 'Child 1-3yr combined infection' }],
+          '3-6': [
+            { name: 'Clarithromycin 125mg/5ml Susp', generic: 'Claribid Susp', cat: 'Antibiotic (Macrolide)', dosage: '7.5mg/kg twice daily', duration: '7-10 din', conf: 91, note: 'Gale aur kaan dono ke infection ke liye.', triggered: 'Child combined infection 3-6yr' },
+            { name: 'Simethicone 80mg', generic: 'Gas-X Paediatric', cat: 'Antiflatulent', dosage: '80mg after meals 3x/day', duration: 'As needed', conf: 87, note: 'Antibiotic ke saath gas ki problem ke liye.', triggered: 'Child gas with antibiotic' }
+          ],
+          '6-12': [
+            { name: 'Clarithromycin 250mg', generic: 'Claribid 250', cat: 'Antibiotic (Macrolide)', dosage: '250mg twice daily after food', duration: '7-10 din', conf: 92, note: 'Full adult-equivalent course for older children.', triggered: 'Child 6-12 combined infection' },
+            { name: 'Deflazacort 6mg', generic: 'Deflomat 6', cat: 'Corticosteroid', dosage: '6mg once daily (doctor supervision)', duration: '3-5 din', conf: 88, note: 'Sujan ke liye. Doctor se confirm karein.', triggered: 'Child combined swelling' },
+            { name: 'Aceclofenac 50mg + Paracetamol + Serratiopeptidase', generic: 'Fensu-SP Paediatric', cat: 'Anti-inflammatory Combo', dosage: 'Doctor ke anusar', duration: '3-5 din', conf: 87, note: 'Pain aur swelling combined relief.', triggered: 'Child combined pain swelling' }
+          ],
         }
       },
       // ── URINE ────────────────────────────────────────────────
