@@ -2943,6 +2943,62 @@
       margin-top: 2px;
     }
 
+    /* ── SKIN DISEASE IMAGE CARDS ── */
+    .sym-options-grid.skin-grid {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+    }
+    .sym-option.skin-card {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(10,14,24,0.7);
+    }
+    .skin-card-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 2px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg,#1a1a2e,#16213e);
+      position: relative;
+    }
+    .skin-card-img-placeholder {
+      width: 100%;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border-bottom: 2px solid rgba(255,255,255,0.08);
+    }
+    .skin-card-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .sym-option.skin-card.active {
+      border-color: var(--warn);
+      box-shadow: 0 0 18px rgba(245,158,11,0.2);
+    }
+    .skin-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.6);
+      color: #fbbf24;
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(251,191,36,0.3);
+    }
+
     .age-toggle {
       display: flex;
       gap: 8px;
@@ -8235,7 +8291,8 @@
       { id: 'men_sym', icon: '👨', label: 'Purush Samasya' },
       { id: 'senior_sym', icon: '👴', label: 'Buzurg Takliifein' },
       { id: 'throat_ear_inf', icon: '🦠', label: 'गले/कान का संक्रमण व सूजन' },
-      { id: 'kaan_bimari', icon: '🩺', label: 'कान बहना / दर्द / फोड़ा / चोट' },];
+      { id: 'kaan_bimari', icon: '🩺', label: 'कान बहना / दर्द / फोड़ा / चोट' },
+      { id: 'daad_khujli', icon: '🔴', label: 'दाद / खाज / खुजली / फंगस' },];
 
     // Each symptom: {id, name, sub, keywords[]}
     const SYM_OPTIONS = {
@@ -8402,6 +8459,22 @@
           { id: 'kb_ear_injury', name: 'कान में चोट — Ear Trauma/Injury', sub: 'Thappad, blast, accident ya kuch daalne se chot' },
           { id: 'kb_vertigo_ear', name: 'कान से चक्कर आना — Ear Vertigo', sub: 'Kaan ki bimari ki wajah se sab ghoomta lagta hai' },
           { id: 'kb_fungal_ear', name: 'कान में फंगस — Otomycosis', sub: 'Kaan mein khujli, kaala ya safed maal, nami se' },
+        ]
+      },
+      // ── DAAD / KHAJ / KHUJLI — SKIN FUNGAL & ITCH ──────────────
+      daad_khujli: {
+        title: '🔴 दाद / खाज / खुजली — Ringworm / Scabies / Itch',
+        isSkinCategory: true,
+        symptoms: [
+          { id: 'sk_tinea_cruris', name: 'जांघ / जांघ की जड़ में दाद — Tinea Cruris (Jock Itch)', sub: 'Jangha ke andar, testicle/vagina ke aaspaas laal ring daad', img: '🔴', badge: 'GROIN', color: '#ef4444', desc: 'Jangha ki jad mein laal, khareedar ring. Pasine se badhti hai. Bahut common.' },
+          { id: 'sk_tinea_corporis', name: 'शरीर पर दाद — Tinea Corporis (Ringworm Body)', sub: 'Haath, peeth, pet, galay par gol ring wali daad', img: '⭕', badge: 'BODY', color: '#f97316', desc: 'Gol ring ki tarah ki daad jo badhti jaati hai. Beech saaf, kinara laal.' },
+          { id: 'sk_tinea_pedis', name: 'पैर की उंगलियों में दाद — Tinea Pedis (Athlete\'s Foot)', sub: 'Ungliyon ke beech chilna, jalan, khujli, badboo', img: '🦶', badge: 'FOOT', color: '#a855f7', desc: 'Pair ki ungliyon ke beech ya sole par. Geeli jagahon par zyada. Fungal.' },
+          { id: 'sk_tinea_versicolor', name: 'रंग बदलने वाले धब्बे — Tinea Versicolor', sub: 'Safed/bhure/peele patches — peeth, seena, kandhe par', img: '🟤', badge: 'PATCHES', color: '#eab308', desc: 'Skin ka colour badal jaata hai. Safed ya bhure dabbe. Malassezia fungus.' },
+          { id: 'sk_scabies', name: 'खाज / खुजली — Scabies (Sarcoptic Mange)', sub: 'Raat ko zyada khujli, ungliyon ke beech, kamar mein', img: '🪲', badge: 'SCABIES', color: '#84cc16', desc: 'Microscopic keede se hoti hai. Raat ko bahut zyada khujli. Parivar mein failti hai.' },
+          { id: 'sk_genital_fungal', name: 'जननांग में फंगस — Genital Candidiasis', sub: 'Vagina/penis area mein safed discharge, khujli, jalan', img: '💊', badge: 'GENITAL', color: '#ec4899', desc: 'Candida fungus. Vagina mein safed discharge ya penis par laal patches + khujli.' },
+          { id: 'sk_intertrigo', name: 'तह वाली जगहों में दाद — Intertrigo / Fold Rash', sub: 'Baghon, stan ke neeche, pet ki tah mein laal dard', img: '🔶', badge: 'FOLDS', color: '#f59e0b', desc: 'Jahan skin aapas mein milti hai wahan. Garm nami se hoti hai. Laal + dard.' },
+          { id: 'sk_contact_itch', name: 'एलर्जी / संपर्क से खुजली — Contact Dermatitis', sub: 'Kisi cheez lagane se daane ya khujli — sabun, kapda, jewellery', img: '🌿', badge: 'ALLERGY', color: '#06b6d4', desc: 'Kisi allergy ya chemical se skin react karti hai. Laal, sujan, khujli.' },
+          { id: 'sk_eczema_itch', name: 'चर्म रोग / एक्जिमा — Eczema / Chronic Itch', sub: 'Sukhi, khurduri, phatni wali skin — baar baar khujli', img: '🩹', badge: 'ECZEMA', color: '#8b5cf6', desc: 'Chronic skin condition. Skin sukh jaati hai, phatne lagti hai, bahut khujli.' },
         ]
       },
       urine_sym: {
@@ -9248,6 +9321,135 @@
           ],
         }
       },
+      // ═══════════════════════════════════════════════════════════
+      // DAAD / KHAJ / KHUJLI — WORLD'S BEST SKIN MEDICINE DATABASE
+      // ═══════════════════════════════════════════════════════════
+      sk_tinea_cruris: {
+        adult: [
+          { name: 'Terbinafine 1% Cream', generic: 'Lamisil AT / Terbicip Cream', cat: '🥇 #1 World Best — Groin Ringworm Cream', dosage: 'Prabhavit jagah par patlaa lep, din mein 1-2 baar — khareedar daira aur uske aaas paas 2cm tak', duration: '2-4 hafte (poora course)', conf: 99, note: '✅ YE CREAM KYA KARTI HAI: JANGHA KI DAAD (TINEA CRURIS / JOCK ITCH) KE LIYE DUNIYA KI #1 ANTIFUNGAL CREAM. Terbinafine fungus ki cell wall ko seedha destroy karta hai — 7 din mein daad ghhatna shuru. Itching 2-3 din mein band. POORA 2-4 HAFTE LAGAANA ZAROOR — agar daad dikhna band ho jaaye tab bhi — warna wapas aati hai zyada strong hokar.', triggered: 'Jangha mein daad — Tinea Cruris Jock Itch' },
+          { name: 'Clotrimazole 1% Cream + Beclomethasone 0.025%', generic: 'Candid-B / Clop-G Cream', cat: 'Antifungal + Steroid Combo (Fast Relief)', dosage: 'Patlaa lep 2 baar din mein — sirf 7-10 din tak steroid wali use karein', duration: '7-10 din (fir sirf Clotrimazole)', conf: 93, note: '✅ YE CREAM KYA KARTI HAI: Clotrimazole fungus khatam karta hai + Beclomethasone turant khujli + laaali khatam karta hai. FAST RELIEF combo. ⚠️ 10 din se zyada mat lagaao — steroid se skin patli ho jaati hai. Uske baad sirf plain clotrimazole lagao.', triggered: 'Groin daad with severe itching — combo cream' },
+          { name: 'Luliconazole 1% Cream', generic: 'Lulifin / Lulican Cream', cat: 'Next-Gen Antifungal (Once Daily — Most Potent)', dosage: 'Ek baar din mein — raat ko sone se pehle lagaen', duration: '2 hafte', conf: 96, note: '✅ YE CREAM KYA KARTI HAI: Sabse nayi aur sabse powerful antifungal cream. ONCE DAILY convenience. Terbinafine se bhi tez kaam karta hai resistant cases mein. Jangha ke gehre daad mein bhi penetrate karta hai.', triggered: 'Groin daad resistant or fast treatment luliconazole' },
+          { name: 'Fluconazole 150mg (Weekly)', generic: 'Forcan 150 / Zocon 150', cat: 'Oral Antifungal (Severe/Widespread Cases)', dosage: '150mg once weekly — khane ke saath', duration: '2-6 hafte', conf: 91, note: '✅ YE TABLET KYA KARTI HAI: Agar cream se kaam na ho ya daad bahut pheeli hui ho to oral tablet. Khoon ke zariye poori jangha ki fungus khatam karta hai. Weekly dose bahut convenient hai.', triggered: 'Severe widespread groin ringworm oral treatment' },
+          { name: 'Terbinafine 250mg Tablet', generic: 'Terbicip 250 / Lamisil Tablet', cat: 'Oral Antifungal (Definitive Systemic)', dosage: '250mg once daily after food', duration: '2-4 hafte', conf: 94, note: '✅ YE TABLET KYA KARTI HAI: Tablet form mein Terbinafine — fungus ko poori tarah andar se khatam karta hai. Cream se zyada effective for deep or extensive infection. Liver function normal hona chahiye.', triggered: 'Extensive groin daad oral terbinafine' },
+          { name: 'Miconazole 2% Powder', generic: 'Daktarin Powder / Zole Powder', cat: 'Antifungal Powder (Prevention + Moisture Control)', dosage: 'Nahaane ke baad jangha pe lightly chidkein', duration: 'Cream ke saath + Prevention ongoing', conf: 87, note: '✅ YE POWDER KYA KARTA HAI: Cream lagane ke baad powder laga to daad bahut jaldi jati hai — nami absorb hoti hai aur fungus survive nahi kar sakti. Jangha mein pasina aana daad ki sabse badi wajah hai — powder se control hota hai.', triggered: 'Groin daad antifungal powder moisture control' },
+        ],
+        child: {
+          '0-1': [{ name: 'Clotrimazole 1% Cream (Paediatric)', generic: 'Candid Cream', cat: 'Safe Antifungal for Infant Diaper Area', dosage: 'Diaper change ke time — patlaa lep 2-3 baar', duration: '2 hafte', conf: 95, note: '✅ YE CREAM KYA KARTI HAI: Neonatal groin area ke liye SABSE SAFE antifungal cream. No steroids. Doctor confirmation after 1 week.', triggered: 'Infant groin fungal diaper rash' }],
+          '1-6': [{ name: 'Clotrimazole 1% Cream', generic: 'Candid Cream / Canesten', cat: 'Antifungal (Safe Paediatric)', dosage: 'Patlaa lep din mein 2 baar', duration: '2-4 hafte', conf: 94, note: '✅ YE CREAM KYA KARTI HAI: Bacchon ke groin daad ke liye safest option. Doctor guidance ke saath use karein.', triggered: 'Child 1-6yr groin ringworm' }],
+          '6-12': [{ name: 'Terbinafine 1% Cream', generic: 'Lamisil AT / Terbicip', cat: 'Best Paediatric Groin Fungal Cream', dosage: 'Din mein ek baar — clean aur dry karne ke baad', duration: '2 hafte', conf: 96, note: '✅ YE CREAM KYA KARTI HAI: Bade bacche mein adult jaisi most effective cream. Fast healing.', triggered: 'Child 6-12yr groin daad' }],
+        }
+      },
+      sk_tinea_corporis: {
+        adult: [
+          { name: 'Terbinafine 1% Cream', generic: 'Lamisil AT / Terbicip Cream', cat: '🥇 #1 Body Ringworm Cream (World Best)', dosage: 'Daad ki ring aur 2cm bahar tak, din mein 1-2 baar lagaen', duration: '2-4 hafte', conf: 99, note: '✅ YE CREAM KYA KARTI HAI: BODY KI DAAD KE LIYE DUNIYA KI SABSE PROVEN CREAM. Gol ring wali daad (Tinea Corporis) ko root se khatam karta hai. 3-4 din mein khujli band, 1-2 hafte mein ring ghatna shuru. POORA COURSE MUST — daad dikhe ya na dikhe.', triggered: 'Shareer par daad — Tinea Corporis Body Ringworm' },
+          { name: 'Luliconazole 1% Cream', generic: 'Lulifin Cream / Lulican', cat: 'Latest-Gen Antifungal (Once Daily)', dosage: 'Ek baar raat ko sone se pehle — daad se 2cm bahar tak', duration: '1-2 hafte', conf: 97, note: '✅ YE CREAM KYA KARTI HAI: Sabse nayi antifungal jo sirf ONCE DAILY lagaani hoti hai. Tez penetration, fast results. Resistant fungus bhi khatam karta hai.', triggered: 'Body daad once daily luliconazole' },
+          { name: 'Ketoconazole 2% Cream', generic: 'Nizoral Cream / Ketoderm', cat: 'Broad Spectrum Antifungal Cream', dosage: 'Din mein 1-2 baar', duration: '3-4 hafte', conf: 90, note: '✅ YE CREAM KYA KARTI HAI: Broad spectrum antifungal — jab ek se zyada tarah ki fungus ho tab. Body daad ke saath agar seborrheic areas (chest, back) bhi ho to best.', triggered: 'Body daad ketoconazole broad spectrum' },
+          { name: 'Itraconazole 100mg Capsule', generic: 'Canditral 100 / Itaspor', cat: 'Oral Antifungal (Extensive/Resistant Body Daad)', dosage: '200mg once daily after heavy meal', duration: '1-2 hafte', conf: 93, note: '✅ YE TABLET KYA KARTI HAI: Jab body par daad bahut zyada ho ya cream se theek na ho — oral itraconazole sabse effective. Liver enzyme check zaroor. Khane ke saath lena ZAROORI — khaali pet absorption 50% kam.', triggered: 'Extensive body ringworm oral itraconazole' },
+          { name: 'Terbinafine 250mg Tablet', generic: 'Terbicip 250 / Lamisil', cat: 'Oral Terbinafine (Definitive Cure)', dosage: '250mg once daily after food', duration: '2-4 hafte', conf: 95, note: '✅ YE TABLET KYA KARTI HAI: Body ki daad ke liye SABSE EFFECTIVE oral treatment. Cream se bahut tez kaam karta hai. Multiple jagahon par daad ho to oral better option hai.', triggered: 'Multiple site body ringworm oral terbinafine' },
+        ],
+        child: {
+          '1-3': [{ name: 'Clotrimazole 1% Cream', generic: 'Candid Cream', cat: 'Safe Paediatric Body Daad Cream', dosage: 'Daad ki ring + bahar 2 baar din mein', duration: '3-4 hafte', conf: 93, note: '✅ Safe and effective for toddlers. Poora course complete karein.', triggered: 'Child body ringworm 1-3yr' }],
+          '3-12': [{ name: 'Terbinafine 1% Cream', generic: 'Lamisil AT / Terbicip', cat: 'Best Paediatric Body Daad Cream', dosage: 'Din mein ek baar — clean dry skin pe', duration: '2 hafte', conf: 96, note: '✅ YE CREAM KYA KARTI HAI: Bacchon ke body daad ke liye sabse effective. Ring clearly dikh rahi ho to ring + 2cm bahar tak lep karein.', triggered: 'Child body ringworm 3-12yr terbinafine' }],
+        }
+      },
+      sk_tinea_pedis: {
+        adult: [
+          { name: 'Terbinafine 1% Cream', generic: 'Lamisil AT / Terbicip Cream', cat: '🥇 #1 Athlete\'s Foot Cream (Gold Standard)', dosage: 'Pair ki ungliyon ke beech aur sole par din mein ek baar — nahaane ke baad dry karke', duration: '1-2 hafte', conf: 99, note: '✅ YE CREAM KYA KARTI HAI: PAIR KI DAAD (ATHLETE\'S FOOT) KE LIYE DUNIYA KI SABSE RECOMMENDED CREAM. Ungliyon ke beech ki fungus ko root se khatam karta hai. Chilna band, jalan band, badboo khatam. 7 din mein clear.', triggered: 'Pair ki ungliyon mein daad — Tinea Pedis Athlete Foot' },
+          { name: 'Miconazole 2% Cream + Powder', generic: 'Daktarin Cream + Zole Powder', cat: 'Antifungal Cream + Powder Combo', dosage: 'Cream: din mein 2 baar; Powder: jooton mein bhi daalo', duration: '2-4 hafte', conf: 92, note: '✅ YE CREAM KYA KARTI HAI: Cream fungus khatam karti hai, powder nami absorb karta hai. JOOTON MEIN BHI POWDER DAALNA ZAROOR — warna fungus jooton se wapas aati hai. Best combination.', triggered: 'Foot fungal cream + powder combo' },
+          { name: 'Amorolfine 0.25% Nail Lacquer (If Nails Infected)', generic: 'Loceryl Nail Lacquer / Curanail', cat: 'Antifungal Nail Paint (Onychomycosis)', dosage: 'Hafte mein 1-2 baar infected nail par — file karo pehle', duration: '6-12 mahine', conf: 90, note: '✅ YE CREAM KYA KARTI HAI: Agar nakhun bhi infected ho (motay, peele, toote nakhun) to sirf cream kaam nahi karti — nail lacquer zaroori hai. Poora nakhun thik hone tak lagaao.', triggered: 'Tinea unguium nail fungal — amorolfine lacquer' },
+          { name: 'Itraconazole 200mg (Pulse Therapy)', generic: 'Canditral 200 / Sporanox', cat: 'Oral Antifungal (Chronic/Nail Involved)', dosage: '200mg twice daily — 7 din, phir 3 hafte band — 3 cycles', duration: '3 pulse cycles (3 mahine)', conf: 88, note: '✅ YE TABLET KYA KARTI HAI: Pulse therapy — 7 din medicine, 21 din band. Nail fungus ke liye sabse effective oral treatment. Medicine nakhun mein months tak rahi hai.', triggered: 'Foot fungal with nail — oral pulse itraconazole' },
+          { name: 'Antifungal Socks + Dry Foot Protocol', generic: 'Copper-infused / Silver Socks', cat: '🛡️ ESSENTIAL Prevention Protocol', dosage: 'Cotton/antifungal socks, jooton mein powder daily', duration: 'Hamesha', conf: 100, note: '✅ YE KYA KARTA HAI: PAIR KI DAAD WAPAS AANE KI SABSE BADI WAJAH — GEELE PAIR, NAMI WALE JOOTE. Nahaane ke baad pair BILKUL SUKHAYEN — ungliyon ke beech bhi. Antifungal powder jooton mein. Open sandal jab bhi ho sake. BINA IS KE KOI CREAM KAAM NAHI KARTI.', triggered: 'Tinea pedis prevention protocol essential' },
+        ],
+        child: {
+          '1-6': [{ name: 'Clotrimazole 1% Cream', generic: 'Candid Cream', cat: 'Paediatric Foot Fungal Cream', dosage: 'Pair sukha kar din mein 2 baar lep', duration: '3-4 hafte', conf: 93, note: '✅ Chhote bacche ke pair ki fungus ke liye safe. Joote aur pair dry rakhein.', triggered: 'Child foot fungal 1-6yr' }],
+          '6-12': [{ name: 'Terbinafine 1% Cream', generic: 'Lamisil AT', cat: 'Best Paediatric Foot Fungal', dosage: 'Ek baar raat ko', duration: '2 hafte', conf: 96, note: '✅ YE CREAM KYA KARTI HAI: School going children mein bahut common. Changesn mein, gym mein fungus milti hai. Cream + dry feet protocol.', triggered: 'Child athlete foot 6-12yr' }],
+        }
+      },
+      sk_tinea_versicolor: {
+        adult: [
+          { name: 'Ketoconazole 2% Shampoo/Wash', generic: 'Nizoral Shampoo / Ketoshine', cat: '🥇 #1 World Best — Tinea Versicolor Treatment', dosage: 'Prabhavit jagah (peeth, seena, kandhe) par lagaen, 5-10 min rakhein, dhooein — roz — ya hafte mein 2 baar prevention ke liye', duration: '2-4 hafte', conf: 98, note: '✅ YE KAISE KAAM KARTA HAI: SKIN KE RANG BADALNE WALE DABBE (TINEA VERSICOLOR) KE LIYE DUNIYA KA SABSE PROVEN TREATMENT. Malassezia fungus ko khatam karta hai. Shampoo ko peeth aur seene par body wash ki tarah use karein. Patches pehle dekhne mein aur gahra ho sakte hain — normal hai. Skin ka rang sahi hone mein 1-3 mahine lagte hain even after fungus khatam.', triggered: 'Rang badalne wale dabbe — Tinea Versicolor' },
+          { name: 'Selenium Sulfide 2.5% Lotion', generic: 'Selsun / Selenel Lotion', cat: 'Antifungal Lotion (Classic Treatment)', dosage: '10-15 min tak lagaen, dhoo lein — daily 7 din', duration: '7-10 din intensive, phir weekly 1 baar', conf: 95, note: '✅ YE KAISE KAAM KARTA HAI: Selenium sulfide Malassezia fungus ki growth seedha rokta hai. Hafte mein ek baar use karna relapse bhi rokta hai. Bathroom mein lagao, 10 min ruko, nahaane ki tarah dhoo lo.', triggered: 'Tinea versicolor selenium sulfide lotion' },
+          { name: 'Fluconazole 300mg (Single Dose)', generic: 'Zocon 300 / Flucos 300', cat: 'Oral Antifungal (Single Dose Convenience)', dosage: 'Sirf ek tablet — 300mg — ek din mein lena hai. Exercise kar ke paseena aao — medicine skin tak pahunche', duration: 'Single dose (fir hafte baad repeat if needed)', conf: 91, note: '✅ YE TABLET KYA KARTI HAI: Ek tablet se Tinea Versicolor ka treatment. Expert tip: tablet lene ke 1 ghante baad exercise karein aur paseena aane dein — medication sweat glands ke zariye skin pe zyada aati hai. 2 hafte mein results dikhte hain.', triggered: 'Tinea versicolor single dose oral fluconazole' },
+          { name: 'Itraconazole 200mg', generic: 'Canditral 200 / Itaspor', cat: 'Oral Antifungal (Recurrent Cases)', dosage: '200mg once daily after meal', duration: '7 din', conf: 90, note: '✅ YE TABLET KYA KARTI HAI: Baar baar aane wali (recurrent) tinea versicolor ke liye. Khaane ke saath lena ZAROORI.', triggered: 'Recurrent tinea versicolor itraconazole' },
+          { name: 'Sunscreen SPF 30+ (Daily)', generic: 'Sunscreen with Zinc Oxide', cat: '🛡️ Essential — Patches Visibility Control', dosage: 'Roz nikalne se pehle lagaen', duration: 'Hamesha', conf: 96, note: '✅ YE KAISE KAAM KARTA HAI: Tinea versicolor mein skin ka rang tab tak sahi nahi dikhta jab tak sun exposure hoti rahi ho. Sunscreen lagane se patches jaldi fade hote hain kyunki sun tan nahi badh ta. Treatment ke saath sunscreen MUST HAI.', triggered: 'Tinea versicolor sunscreen patches fading' },
+        ],
+        child: {
+          '3-6': [{ name: 'Ketoconazole 2% Shampoo (Diluted)', generic: 'Nizoral Shampoo diluted', cat: 'Antifungal Wash (Paediatric)', dosage: '5 min lagaen, dhoo lein — hafte mein 3 baar', duration: '3-4 hafte', conf: 90, note: '✅ Bacche ke skin patches ke liye safe. Doctor supervision ke saath use.', triggered: 'Child tinea versicolor 3-6yr' }],
+          '6-12': [{ name: 'Selenium Sulfide 2.5% + Ketoconazole 2% Shampoo', generic: 'Selsun + Nizoral', cat: 'Antifungal Wash Combo', dosage: 'Alternate din mein use karein — 5-10 min laga ke dhoo', duration: '3-4 hafte', conf: 93, note: '✅ YE KAISE KAAM KARTA HAI: Dono milakr Malassezia fungus ko fast khatam karte hain. School age children mein common.', triggered: 'Child tinea versicolor 6-12yr' }],
+        }
+      },
+      sk_scabies: {
+        adult: [
+          { name: 'Permethrin 5% Cream', generic: 'Scabimite / Nix Cream / Permethrin 5%', cat: '🥇 #1 World Best — Scabies Treatment (Gold Standard)', dosage: 'FULL BODY par neck se neeche lagaen — nakhunon ke neeche, ungliyon ke beech, kamar, genital area bhi. 8-12 ghante rakhein, fir nahaen. 1 HAFTE BAAD DOBARA LAGAEN.', duration: '2 applications (1 hafte ke antar)', conf: 99, note: '✅ YE CREAM KYA KARTI HAI: KHAJ (SCABIES) KE LIYE DUNIYA KI SABSE PROVEN AUR SABSE SAFE CREAM. Sarcoptes scabiei keede + unke ande dono ko khatam karta hai. SABSE ZAROORI: POORE GHAR KE LOGON KO EK SAATH LAGAANA HOGA — warna ek se doosre mein failti rahi. Kapde, bistar, takiye — sab 60°C par dhoen.', triggered: 'Khaj / Scabies — poore ghar ko ek saath lagaen' },
+          { name: 'Ivermectin 12mg Tablet', generic: 'Ivecop 12 / Vermact', cat: 'Oral Scabicides (Severe/Crusted/Immunocompromised)', dosage: '200mcg/kg body weight — ek hi dose (approx 12-15mg for 60-70kg)', duration: '1 dose (7 din baad repeat)', conf: 95, note: '✅ YE TABLET KYA KARTI HAI: Scabies ke liye ORAL treatment. Cream lagate waqt koi takliif ho ya ghar ke sab cream na laga sakein to tablet. Norwegian/Crusted scabies (bahut severe) mein cream ke saath milakr dono dein. 7 din baad repeat zaroor.', triggered: 'Severe scabies crusted oral ivermectin' },
+          { name: 'Lindane 1% Lotion (Alternative)', generic: 'Scabex / Gambex', cat: 'Scabicide (Alternative — Not in Pregnancy)', dosage: 'Body par 8 hrs lagaen, nahaen — sirf ek baar', duration: 'Single application', conf: 83, note: '✅ YE CREAM KYA KARTI HAI: Permethrin na mile to alternative. ⚠️ Pregnant women aur 2 saal se chhote bachche mein BILKUL NAHI. Ek hi baar use karna hai.', triggered: 'Scabies lindane alternative treatment' },
+          { name: 'Cetirizine 10mg (Anti-Itch)', generic: 'Zyrtec / Cetzine', cat: 'Antihistamine (Itch Relief During Treatment)', dosage: '10mg raat ko sone se pehle', duration: '1-2 hafte', conf: 91, note: '✅ YE TABLET KYA KARTI HAI: Scabies treatment ke dauran bhi khujli kaafi raat ko hoti hai (dead keede ki allergic reaction). Cetirizine khujli band karta hai aur neend aane deta hai. Permethrin cream ke SAATH lein.', triggered: 'Scabies post-treatment itch cetirizine' },
+          { name: 'Decontamination Protocol', generic: 'Hot Wash 60°C + Plastic Bag Method', cat: '🛡️ MUST DO — Family Decontamination', dosage: 'Sab kapde, bistar, takiye, towels 60°C par wash. Jo na dhul sake use plastic bag mein 72 hrs band rakho.', duration: 'Treatment ke din hi — ek baar', conf: 100, note: '🔴 SABSE ZAROORI STEP: BINA IS KE SCABIES KABHI THEEK NAHI HOGI. Sarcoptes keede kapdon aur bister mein 3 din tak zinda rehte hain. Ghar ke SABHI LOGON KO EK HI DIN CREAM LAGANI HAI — even if no symptoms. Carpet, sofa vacuuming bhi karein.', triggered: 'Scabies decontamination household treatment MUST' },
+        ],
+        child: {
+          '0-1': [{ name: 'Permethrin 5% Cream (Doctor Supervised)', generic: 'Scabimite', cat: 'Gold Standard (Infant — Doctor Supervision)', dosage: 'Doctor ki guidance se full body — sirf 6-8 hrs rakhein infant mein', duration: '2 applications', conf: 95, note: '⚠️ INFANT MEIN SCABIES — SIRF DOCTOR KE BAAD. Permethrin infant ke liye generally safe hai par dosing aur duration doctor decide karenge. Ghar ke sabhi logo ka treatment saath mein.', triggered: 'Infant scabies permethrin doctor supervised' }],
+          '1-6': [{ name: 'Permethrin 5% Cream + Cetirizine Syrup', generic: 'Scabimite + Zyrtec Syrup', cat: 'Scabies Combo Paediatric', dosage: 'Permethrin: full body 8 hrs; Cetirizine: 2.5mg/day', duration: '2 applications 1 hafte antar', conf: 95, note: '✅ YE KYA KARTA HAI: Cream scabies khatam karti hai, cetirizine khujli band karta hai. Ghar ke sab logon ka treatment ek saath.', triggered: 'Child scabies 1-6yr permethrin combo' }],
+          '6-12': [{ name: 'Permethrin 5% + Ivermectin Tablet', generic: 'Scabimite + Ivecop', cat: 'Standard Paediatric Scabies Treatment', dosage: 'Permethrin: full body; Ivermectin: 150-200mcg/kg', duration: '2 doses', conf: 96, note: '✅ YE KYA KARTA HAI: Bade bachche mein adult jaisi treatment. Ivermectin sirf 15kg se upar ke bachche mein. Ek sath poore ghar mein treatment.', triggered: 'Child scabies 6-12yr combo treatment' }],
+        }
+      },
+      sk_genital_fungal: {
+        adult: [
+          { name: 'Clotrimazole 500mg Vaginal Pessary (Single Dose)', generic: 'Candid V3 / Gynomyk Pessary', cat: '🥇 #1 Vaginal Candidiasis — Single Dose Treatment', dosage: 'Raat ko sone se pehle 1 pessary andar rakho — 1 baar kaafi', duration: 'Single dose (3-7 din pessary options bhi available)', conf: 98, note: '✅ YE PESSARY KYA KARTI HAI: VAGINAL FUNGAL INFECTION KE LIYE DUNIYA KA #1 TREATMENT. Candida fungus ko seedha vagina ke andar khatam karta hai. WHITE DISCHARGE, KHUJLI, JALAN — teen-chaar din mein bilkul theek. Single dose bahut convenient aur effective hai.', triggered: 'Vagina mein fungal — Vaginal Candidiasis pessary' },
+          { name: 'Clotrimazole 1% + 2% Vaginal Cream', generic: 'Candid V Cream / Gyno-Daktarin', cat: 'Vaginal Antifungal Cream (External + Internal)', dosage: 'External: din mein 2-3 baar lagaen; Internal applicator se raat ko 1 baar', duration: '7 din', conf: 95, note: '✅ YE CREAM KYA KARTI HAI: Andar ki fungus + bahar ki khujli dono treat karta hai. Applicator se andar dena zyada effective hai. Bahar bhi lagane se rapid relief.', triggered: 'Vaginal fungal internal external cream' },
+          { name: 'Fluconazole 150mg Tablet (Oral)', generic: 'Zocon 150 / Flucomed 150', cat: 'Oral Antifungal (Convenient Single Dose)', dosage: 'Sirf EK tablet — 150mg — ek din mein', duration: 'Single dose (severe mein 72 hrs baad ek aur)', conf: 97, note: '✅ YE TABLET KYA KARTI HAI: VAGINAL FUNGAL KE LIYE SABSE CONVENIENT ORAL TREATMENT. Ek tablet se vaginal candidiasis khatam. Cream se zyada asaan aur equally effective. Pregnant women ko AVOID karein.', triggered: 'Vaginal candidiasis oral fluconazole single dose' },
+          { name: 'Clotrimazole 1% Cream (Male Genital Area)', generic: 'Candid Cream / Canesten 1%', cat: 'Male Genital Fungal (Penis/Scrotal Daad)', dosage: 'Clean aur dry karke din mein 2 baar — glans aur foreskin par', duration: '2-4 hafte', conf: 95, note: '✅ YE CREAM KYA KARTI HAI: Penis ya scrotum ke aaspaas ki fungal infection (Candidal Balanitis / Jock-type penis daad) ke liye. Foreskin ke neeche saaf karna aur phir cream lagana zaroori hai. Partner ka bhi treatment zaroor karein.', triggered: 'Male genital fungal candidiasis penis scrotum' },
+          { name: 'Boric Acid 600mg Vaginal Capsules', generic: 'Boric Acid Vaginal Suppository', cat: 'Recurrent Resistant Candidiasis (Alternative)', dosage: 'Raat ko 1 capsule 14 din tak', duration: '14 din', conf: 88, note: '✅ YE KYA KARTI HAI: Fluconazole-resistant candidiasis mein highly effective. Vagina ka pH balance restore karta hai. Recurrent infections (baar baar aane wali) ke liye best. ⚠️ Oral mat khaaein — sirf vaginal use.', triggered: 'Recurrent resistant vaginal candidiasis boric acid' },
+          { name: 'Lactobacillus Probiotic (Daily)', generic: 'Lactobacillus acidophilus Capsule / Florafort', cat: 'Probiotic — Recurrence Prevention', dosage: '1 capsule daily after food', duration: '4-8 hafte', conf: 85, note: '✅ YE KYA KARTA HAI: Vagina ka natural bacterial balance restore karta hai. Candida fungus ko control rakhta hai. Antibiotic course ke baad zaroor lein — antibiotics friendly bacteria khatam kar dete hain aur fungal infection aati hai.', triggered: 'Vaginal candidiasis recurrence prevention probiotic' },
+        ],
+        child: {
+          '0-1': [{ name: '🚨 Paediatrician/Gynaecologist — Urgent', generic: 'Emergency Referral', cat: 'URGENT REFERRAL', dosage: 'Koi bhi cream khud mat laggayen', duration: 'Doctor guidance', conf: 100, note: '🚨 INFANT MEIN GENITAL AREA FUNGAL — DOCTOR ZAROOR. Clotrimazole cream sirf doctor ke baad. Cause alag ho sakta hai.', triggered: 'Infant genital fungal urgent referral' }],
+          '3-12': [{ name: 'Clotrimazole 1% Cream (External Only)', generic: 'Candid Cream', cat: 'External Genital Antifungal (Paediatric)', dosage: 'Sirf bahar ki skin par — din mein 2-3 baar', duration: '2 hafte', conf: 92, note: '✅ YE CREAM KYA KARTI HAI: Bacchon mein genital area ki surface ki fungal ke liye. Doctor confirmation ke baad hi use karein. Koi bhi internal application strictly prohibited.', triggered: 'Child genital external fungal 3-12yr' }],
+        }
+      },
+      sk_intertrigo: {
+        adult: [
+          { name: 'Clotrimazole 1% + Zinc Oxide Cream', generic: 'Candid Powder-Cream / Mycin-Z', cat: '🥇 Best Fold Rash Treatment (Antifungal + Protective)', dosage: 'Jagah saaf aur bilkul sukhao, phir patlaa lep 2-3 baar', duration: '2-4 hafte', conf: 96, note: '✅ YE CREAM KYA KARTI HAI: JAHAN SKIN SKIN SE MILTI HAI WAHAN KI DAAD (INTERTRIGO) KE LIYE BEST. Clotrimazole fungus khatam karta hai, Zinc Oxide protective barrier banata hai. Baghon mein, stan ke neeche, pet ki tah mein, jangha mein — sabse zyada effective.', triggered: 'Tah wali jagah daad — Intertrigo fold rash' },
+          { name: 'Miconazole Nitrate 2% Powder', generic: 'Daktarin Powder / Zole Powder', cat: 'Antifungal Powder (Essential Fold Therapy)', dosage: 'Cream lagane ke baad halki tarah powder lagaen', duration: 'Cream ke saath ongoing', conf: 93, note: '✅ YE POWDER KYA KARTA HAI: Taah wali jagahon mein nami sabse bada problem hai — powder nami khatam karta hai aur fungus survive nahi kar sakti. Cream ke saath powder milakr use karna DOUBLE EFFECTIVE hai.', triggered: 'Fold rash antifungal powder nami control' },
+          { name: 'Hydrocortisone 1% + Clotrimazole 1% Cream', generic: 'Canesten HC / Hydrozole', cat: 'Antifungal + Mild Steroid (Fast Relief)', dosage: 'Patlaa lep din mein 2 baar — sirf 7-10 din', duration: '7-10 din max', conf: 91, note: '✅ YE CREAM KYA KARTI HAI: Tez laaali aur dard mein FASTEST RELIEF. Hydrocortisone sujan + dard khatam karta hai, Clotrimazole fungus. ⚠️ 10 din se zyada mat lagaen fold areas mein — skin patli ho jaati hai.', triggered: 'Intertrigo severe inflammation pain combo' },
+          { name: 'Loose Cotton Clothing + Frequent Drying', generic: 'Cotton Breathable Wear', cat: '🛡️ CRITICAL Prevention — Moisture Control', dosage: 'Dhile cotton kapde, taah wali jagah roz 2-3 baar dry kapde se ponchhein', duration: 'Hamesha', conf: 100, note: '✅ YE KYA KARTA HAI: INTERTRIGO KI SABSE BADI WAJAH — NAMI AUR GARMI. Bina is ke koi cream kaam nahi karti. Dhile cotton kapde pehno, synthetic avoid karo. Taah wali jagah pe cotton piece rakh sakte ho "moisture barrier" ki tarah.', triggered: 'Intertrigo prevention moisture control lifestyle' },
+        ],
+        child: {
+          '0-1': [{ name: 'Zinc Oxide Cream + Clotrimazole 0.5%', generic: 'Baby Bum Cream + Candid Cream', cat: 'Safe Infant Fold Rash Treatment', dosage: 'Diaper change ke time — clean dry karke lagaen', duration: '2 hafte', conf: 93, note: '✅ YE CREAM KYA KARTI HAI: Infant ke diaper area aur skin folds ke liye. Zinc oxide protect karta hai, clotrimazole fungus khatam.', triggered: 'Infant intertrigo diaper area' }],
+          '1-12': [{ name: 'Clotrimazole 1% Cream + Miconazole Powder', generic: 'Candid Cream + Daktarin Powder', cat: 'Paediatric Fold Rash Combo', dosage: 'Cream 2 baar din mein + powder drying ke liye', duration: '2-4 hafte', conf: 94, note: '✅ Bacchon mein bhee wahi principle — dry + antifungal. Cotton kapde. Synthetic avoid.', triggered: 'Child intertrigo fold rash 1-12yr' }],
+        }
+      },
+      sk_contact_itch: {
+        adult: [
+          { name: 'Hydrocortisone 1% Cream', generic: 'Cortaid / Locoid 1% / HC Cream', cat: '🥇 First-Line Steroid (Mild Contact Dermatitis)', dosage: 'Prabhavit jagah par patlaa lep din mein 2 baar', duration: '5-7 din', conf: 95, note: '✅ YE CREAM KYA KARTI HAI: KISI CHEEZ LAGANE SE AANE WALI KHUJLI / ALLERGY KE LIYE FIRST CHOICE. Sujan aur khujli seedha band karta hai. Sabun, jewellery, kapde, parfum — kisi bhi cheez ki allergy mein. 7 din se zyada ek jagah mat lagaen.', triggered: 'Contact dermatitis allergy khujli reaction' },
+          { name: 'Mometasone Furoate 0.1% Cream', generic: 'Elocon / Momate Cream', cat: 'Potent Steroid (Moderate-Severe Contact Dermatitis)', dosage: 'Patlaa lep ek baar daily — sirf 7-14 din', duration: '7-14 din', conf: 93, note: '✅ YE CREAM KYA KARTI HAI: Tez khujli aur sujan mein zyada powerful steroid. Ek baar daily lagaana kaafi — zyada mat lagaen. Face par AVOID karein — sirf body par.', triggered: 'Severe contact dermatitis mometasone' },
+          { name: 'Cetirizine 10mg Tablet', generic: 'Zyrtec / Cetzine 10', cat: 'Antihistamine (Systemic Itch + Allergy Relief)', dosage: '10mg raat ko sone se pehle', duration: '5-10 din', conf: 94, note: '✅ YE TABLET KYA KARTI HAI: Cream ke saath oral antihistamine lene se BAHUT FAST RELIEF milti hai. Skin ki histamine reaction (jo khujli karta hai) block karta hai. Neend aa sakti hai isliye raat ko lein.', triggered: 'Contact dermatitis oral antihistamine' },
+          { name: 'Fexofenadine 180mg', generic: 'Allegra 180 / Telfast', cat: 'Non-Drowsy Antihistamine (Daytime Use)', dosage: '180mg once daily morning — khane ke saath', duration: '7-10 din', conf: 91, note: '✅ YE TABLET KYA KARTI HAI: Cetirizine ki tarah kaam karta hai par neend NAHI aati. Din mein kaam karte waqt bhi le sakte hain. Khujli aur allergy dono khatam.', triggered: 'Contact dermatitis non-drowsy antihistamine fexofenadine' },
+          { name: 'Calamine Lotion', generic: 'Calamine / Lacto Calamine', cat: 'Cooling Soothing Agent (Instant Itch Relief)', dosage: 'Jahan bhi khujli ho — cotton se lagaen — din mein jab chahein', duration: 'Jab tak zaroorat ho', conf: 88, note: '✅ YE LOTION KYA KARTI HAI: Turant thanda aur soothing effect. Kisi bhi allergy ya contact reaction mein immediate relief deta hai. Cotton bud se lagaen. No side effects — kisi bhi jagah use kar sakte hain.', triggered: 'Contact dermatitis instant cooling calamine' },
+        ],
+        child: {
+          '0-1': [{ name: 'Emollient/Moisturizer + Pediatrician Review', generic: 'Cetaphil / CeraVe Baby', cat: 'Gentle Moisturizer (Infant Skin Reaction)', dosage: 'Har nahaane ke baad lagaen', duration: 'Ongoing', conf: 90, note: '⚠️ INFANT MEIN CONTACT REACTION — Steroid cream khud mat lagaen. Pediatrician se milein. Gentle moisturizer interim mein.', triggered: 'Infant contact dermatitis moisturizer' }],
+          '1-6': [{ name: 'Hydrocortisone 0.5% Cream + Cetirizine Syrup', generic: 'HC Cream 0.5% + Zyrtec Syrup', cat: 'Mild Steroid + Antihistamine (Paediatric)', dosage: 'HC cream: 2 baar din mein; Cetirizine: 2.5mg daily', duration: '5-7 din', conf: 93, note: '✅ YE KYA KARTA HAI: Chhote bacche ke liye low-dose steroid cream + oral antihistamine. Fast relief.', triggered: 'Child contact dermatitis 1-6yr' }],
+          '6-12': [{ name: 'Hydrocortisone 1% Cream + Cetirizine 5mg', generic: 'HC 1% Cream + Cetzine 5mg', cat: 'Standard Paediatric Contact Dermatitis', dosage: 'Cream: 2 baar; Cetirizine: 5mg raat ko', duration: '5-7 din', conf: 95, note: '✅ YE KYA KARTA HAI: Bade bacche mein adult-like treatment. Allergen (karan) dhundhna zaroori — warna wapas aayega.', triggered: 'Child contact dermatitis 6-12yr' }],
+        }
+      },
+      sk_eczema_itch: {
+        adult: [
+          { name: 'Betamethasone 0.05% + Clioquinol Cream', generic: 'Betnovate-C / Quadriderm Cream', cat: '🥇 Best Active Eczema Cream (Steroid + Antiseptic)', dosage: 'Patlaa lep din mein 2 baar — SIRF active flare mein', duration: 'Flare: 5-7 din; phir taper', conf: 95, note: '✅ YE CREAM KYA KARTI HAI: ECZEMA (CHARAM ROG) KI ACTIVE FLARE KE LIYE SABSE EFFECTIVE COMBO. Betamethasone powerful steroid hai jo sujan + khujli fast khatam karta hai. Clioquinol secondary infection rokta hai. ⚠️ SIRF FLARE MEIN — regular use mat karein.', triggered: 'Eczema active flare betamethasone cream' },
+          { name: 'Tacrolimus 0.1% Ointment', generic: 'Protopic 0.1% / Tacrosel', cat: 'Non-Steroid Immunomodulator (Long-Term Safe)', dosage: 'Patlaa lep din mein 2 baar — face aur body dono par safe', duration: 'Flare aane par — long-term use bhi safe', conf: 96, note: '✅ YE OINTMENT KYA KARTI HAI: STEROID KE BINA ECZEMA CONTROL KARNE KI SABSE MODERN MEDICINE. Skin ki immune reaction modulate karta hai. FACE PAR BHAI SAFE — steroid face par nahi lagaate. Long term use ke liye best. Burning/stinging initially — 1 hafte mein theek.', triggered: 'Eczema long-term non-steroid tacrolimus' },
+          { name: 'Cetirizine 10mg (Nightly)', generic: 'Zyrtec / Cetzine 10', cat: 'Antihistamine (Chronic Itch Control)', dosage: '10mg raat ko — roz', duration: 'Flare ke dauran ya chronic khujli mein', conf: 93, note: '✅ YE TABLET KYA KARTI HAI: Eczema mein raat ko sabse zyada khujli hoti hai. Raat ko Cetirizine lene se neend bhi aati hai aur khujli khatam. Scratching se eczema aur bura hota hai — antihistamine cycle todti hai.', triggered: 'Eczema night itching antihistamine' },
+          { name: 'CeraVe / Cetaphil Moisturizing Cream (Daily)', generic: 'CeraVe Moisturizing Cream / Cetaphil', cat: '🛡️ CORNERSTONE — Daily Moisturizer (Most Important)', dosage: 'Nahaane ke turant baad (3 minute ke andar) — puri body par thick layer lagaen', duration: 'HAMESHA — roz', conf: 100, note: '✅ YE KYA KARTA HAI: ECZEMA MEIN SABSE ZAROORI CHEEZ HAI MOISTURIZER — kisi bhi cream se zyada zaroori. Nahaane ke baad 3 minute ke andar lagaen — nami skin mein lock hoti hai. Ceramide wala moisturizer zyada effective. BINA DAILY MOISTURIZER KE KOI BHI MEDICINE ZYADA KAAM NAHI KARTI.', triggered: 'Eczema daily moisturizer ceramide essential' },
+          { name: 'Prednisolone 30mg (Severe Flare — Short Course)', generic: 'Omnacortil 10mg Tablets', cat: 'Oral Steroid (Severe Widespread Eczema Flare)', dosage: '30mg morning (3 tabs x 10mg) for 5 days, phir taper', duration: '7-10 din (doctor guided)', conf: 88, note: '✅ YE TABLET KYA KARTI HAI: Bahut tez eczema flare jab puri body mein phele — oral steroid short course fast khatam karta hai. ⚠️ Short course hi — 10 din se zyada nahi. Doctor supervision.', triggered: 'Severe eczema flare oral steroid prednisolone' },
+          { name: 'Coal Tar 1-2% Shampoo/Lotion', generic: 'Alphosyl / MG217 Tar Shampoo', cat: 'Keratolytic (Scalp/Body Eczema)', dosage: 'Shampoo: 3-4 baar hafte mein; Body lotion: raat ko', duration: '4-8 hafte', conf: 86, note: '✅ YE KYA KARTA HAI: Coal tar skin cell turnover slow karta hai — scalp aur body eczema mein itching dramatically kam karta hai. Kapdon mein stain lagta hai — purane kapde pehno raat ko.', triggered: 'Scalp body eczema coal tar therapy' },
+        ],
+        child: {
+          '0-1': [{ name: 'Emollient (CeraVe Baby) + Mild HC 0.5%', generic: 'CeraVe Baby Cream + HC 0.5%', cat: 'Infant Eczema (Moisturizer First)', dosage: 'Moisturizer: har diaper change; HC cream: active flare mein 2x/day x 5 din', duration: 'Moisturizer daily ongoing; HC sirf flare mein', conf: 95, note: '✅ YE KYA KARTA HAI: Infant eczema mein moisturizer SABSE ZAROORI hai. HC 0.5% low-dose steroid infant ke liye safe — sirf flare mein use karein.', triggered: 'Infant eczema moisturizer low-dose steroid' }],
+          '1-6': [{ name: 'Tacrolimus 0.03% Ointment + CeraVe Moisturizer', generic: 'Protopic 0.03% + CeraVe', cat: 'Best Paediatric Eczema Treatment (Non-Steroid)', dosage: 'Tacrolimus: 2 baar din mein flare mein; Moisturizer: roz', duration: 'Moisturizer daily; Tacrolimus jab zaroorat ho', conf: 96, note: '✅ YE KYA KARTA HAI: Bacchon ke liye non-steroid option — face par bhi safe. 0.03% paediatric strength. Daily moisturizer must.', triggered: 'Child eczema 1-6yr tacrolimus moisturizer' }],
+          '6-12': [
+            { name: 'Tacrolimus 0.1% Ointment + Cetirizine 5mg', generic: 'Protopic 0.1% + Cetzine', cat: 'Standard Paediatric Eczema Management', dosage: 'Tacrolimus: 2 baar flare mein; Cetirizine: 5mg raat ko', duration: 'Ongoing management', conf: 95, note: '✅ YE KYA KARTA HAI: Bade bacche mein adult jaisi tacrolimus strength. Raat ko cetirizine khujli aur scratching rokti hai — eczema worse hone se bachata hai.', triggered: 'Child eczema 6-12yr tacrolimus cetirizine' },
+            { name: 'CeraVe Moisturizing Cream', generic: 'CeraVe / Cetaphil / Vaseline', cat: 'Daily Moisturizer (Non-Negotiable)', dosage: 'Nahaane ke 3 min ke andar — roz', duration: 'Hamesha', conf: 100, note: '✅ SABSE ZAROORI — BINA MOISTURIZER KE KOI BHI TREATMENT KAAM NAHI KARTA. Ceramide wala best hai.', triggered: 'Child eczema daily moisturizer essential' }
+          ],
+        }
+      },
       // ── URINE ────────────────────────────────────────────────
       burning_urine: {
         adult: [
@@ -9473,6 +9675,32 @@
       w.innerHTML = Array.from(selectedSymCats).map(cid => {
         const sec = SYM_OPTIONS[cid];
         if (!sec) return '';
+
+        // SKIN DISEASE CARDS — rich visual layout with emoji + badge + desc
+        if (sec.isSkinCategory) {
+          return `<div class="sym-section">
+      <div class="sym-sec-title">${sec.title}</div>
+      <div class="sym-options-grid skin-grid">
+        ${sec.symptoms.map(s => `
+          <div class="sym-option skin-card ${selectedSymptoms.has(s.id) ? 'active' : ''}" id="sopt-${s.id}" onclick="toggleSymOption('${s.id}')">
+            <div class="skin-card-img-placeholder" style="background:linear-gradient(135deg,${s.color}22,${s.color}11);border-bottom:2px solid ${s.color}44;position:relative;">
+              <span style="font-size:52px;line-height:1;">${s.img}</span>
+              <span class="skin-badge" style="background:${s.color}cc;color:#fff;border-color:${s.color}88;">${s.badge}</span>
+            </div>
+            <div class="skin-card-body">
+              <div class="sym-cb" style="${selectedSymptoms.has(s.id) ? 'background:'+s.color+';border-color:'+s.color : 'border-color:'+s.color+'66'}"></div>
+              <div class="sym-option-text">
+                <div class="sym-option-name" style="font-size:11.5px;">${s.name}</div>
+                <div class="sym-option-sub" style="color:${s.color}cc;margin-top:3px;">${s.desc}</div>
+                <div class="sym-option-sub" style="margin-top:4px;color:var(--muted);">${s.sub}</div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+        }
+
+        // DEFAULT CARD — normal layout for all other categories
         return `<div class="sym-section">
       <div class="sym-sec-title">${sec.title}</div>
       <div class="sym-options-grid">
